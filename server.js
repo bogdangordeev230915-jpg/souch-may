@@ -36,10 +36,10 @@ function generateUniqueCode() {
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 15 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) cb(null, true);
-    else cb(new Error('Только изображения'));
+    if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('audio/')) cb(null, true);
+    else cb(new Error('Только изображения и аудио'));
   }
 });
 
@@ -111,7 +111,7 @@ app.get('/api/chats/:userId', (req, res) => {
   res.json(list);
 });
 
-app.post('/api/upload', upload.single('image'), (req, res) => {
+app.post('/api/upload', upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'Нет файла' });
   const b64 = req.file.buffer.toString('base64');
   const dataUrl = `data:${req.file.mimetype};base64,${b64}`;
