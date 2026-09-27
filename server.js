@@ -1,755 +1,156 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-<title>СОУЧ Май</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; overflow: hidden; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #0e1116; color: #e8eaed;
-    display: flex; flex-direction: column;
-    overscroll-behavior: none;
-    position: fixed; inset: 0;
-  }
-  #app {
-    display: flex; flex-direction: column;
-    height: 100%; width: 100%;
-    height: calc(var(--vh, 1vh) * 100);
-  }
-  .screen {
-    display: none; flex: 1; flex-direction: column;
-    overflow: hidden; opacity: 0;
-  }
-  .screen.active {
-    display: flex;
-    animation: screenFadeIn .25s ease forwards;
-  }
-  @keyframes screenFadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .header {
-    padding: 14px 16px; background: #161b22;
-    border-bottom: 1px solid #21262d;
-    display: flex; align-items: center; gap: 12px;
-    min-height: 58px; flex-shrink: 0;
-  }
-  .header h1 { font-size: 18px; font-weight: 600; flex: 1; }
-  .header .back {
-    background: none; border: none; color: #58a6ff;
-    font-size: 20px; cursor: pointer; padding: 4px 8px;
-    transition: transform .15s;
-  }
-  .header .back:active { transform: scale(.9); }
-  .header .logo { font-size: 22px; }
-  .content { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
-  .content.center { display: flex; flex-direction: column; justify-content: center; }
-  input, button { font-family: inherit; font-size: 16px; }
-  .field {
-    width: 100%; padding: 14px 16px;
-    background: #161b22; border: 1px solid #30363d;
-    border-radius: 10px; color: #e8eaed; margin-bottom: 12px;
-    outline: none; transition: border-color .15s;
-  }
-  .field:focus { border-color: #58a6ff; }
-  .btn {
-    width: 100%; padding: 14px; border-radius: 10px;
-    background: #238636; color: #fff; border: none;
-    font-weight: 600; cursor: pointer;
-    transition: background .15s, transform .1s;
-  }
-  .btn:hover { background: #2ea043; }
-  .btn:active { transform: scale(.98); }
-  .btn:disabled { background: #21262d; color: #8b949e; cursor: not-allowed; }
-  .btn.secondary { background: #21262d; }
-  .btn.secondary:hover { background: #30363d; }
-  .btn.small { width: auto; padding: 10px 16px; font-size: 14px; }
-  .title { font-size: 28px; font-weight: 700; margin-bottom: 8px; text-align: center; }
-  .subtitle { color: #8b949e; margin-bottom: 28px; text-align: center; font-size: 14px; }
-  .error { color: #f85149; font-size: 14px; margin-bottom: 12px; min-height: 18px; }
-  .my-code-box {
-    background: #161b22; border: 1px solid #30363d;
-    border-radius: 16px; padding: 32px 20px;
-    text-align: center; margin-bottom: 16px;
-    animation: scaleIn .3s ease;
-  }
-  @keyframes scaleIn {
-    from { transform: scale(.9); opacity: 0; }
-    to   { transform: scale(1); opacity: 1; }
-  }
-  .my-code-box .label { color: #8b949e; font-size: 13px; margin-bottom: 12px; }
-  .my-code-box .code {
-    font-family: 'SF Mono', Consolas, monospace;
-    font-size: 26px; font-weight: 700; letter-spacing: 1px;
-    color: #58a6ff; margin-bottom: 20px; word-break: break-all;
-  }
-  .chat-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 14px; background: #161b22;
-    border-radius: 12px; margin-bottom: 8px;
-    cursor: pointer;
-    transition: background .15s, transform .1s;
-    animation: slideInLeft .3s ease backwards;
-  }
-  .chat-item:nth-child(1) { animation-delay: .02s; }
-  .chat-item:nth-child(2) { animation-delay: .06s; }
-  .chat-item:nth-child(3) { animation-delay: .10s; }
-  .chat-item:nth-child(4) { animation-delay: .14s; }
-  .chat-item:nth-child(5) { animation-delay: .18s; }
-  @keyframes slideInLeft {
-    from { transform: translateX(-16px); opacity: 0; }
-    to   { transform: translateX(0); opacity: 1; }
-  }
-  .chat-item:hover { background: #1c2430; }
-  .chat-item:active { transform: scale(.98); }
-  .avatar {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: linear-gradient(135deg, #58a6ff, #3fb950);
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; color: #0e1116; font-size: 18px; flex-shrink: 0;
-  }
-  .chat-item .info { flex: 1; min-width: 0; }
-  .chat-item .name { font-weight: 600; margin-bottom: 2px; }
-  .chat-item .code { color: #8b949e; font-size: 12px; font-family: monospace; }
-  .messages {
-    flex: 1; overflow-y: auto; padding: 16px;
-    display: flex; flex-direction: column; gap: 8px;
-    background: #0e1116;
-    -webkit-overflow-scrolling: touch;
-  }
-  .msg {
-    max-width: 78%; padding: 10px 14px;
-    border-radius: 16px; word-wrap: break-word;
-    font-size: 15px; line-height: 1.4;
-    animation: msgIn .25s ease;
-  }
-  @keyframes msgIn {
-    from { transform: translateY(10px) scale(.95); opacity: 0; }
-    to   { transform: translateY(0) scale(1); opacity: 1; }
-  }
-  .msg.me {
-    align-self: flex-end; background: #238636; color: #fff;
-    border-bottom-right-radius: 4px;
-  }
-  .msg.them {
-    align-self: flex-start; background: #21262d;
-    border-bottom-left-radius: 4px;
-  }
-  .msg img { max-width: 100%; border-radius: 10px; display: block; }
-  .msg audio { width: 240px; max-width: 100%; margin: 4px 0; }
-  .msg .time { font-size: 10px; opacity: .6; margin-top: 4px; text-align: right; }
-  .composer {
-    padding: 10px 12px;
-    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
-    background: #161b22;
-    border-top: 1px solid #21262d;
-    display: flex; gap: 8px; align-items: center;
-    flex-shrink: 0;
-    position: relative;
-    z-index: 10;
-  }
-  .composer input[type=text] {
-    flex: 1; padding: 12px 16px; background: #0e1116;
-    border: 1px solid #30363d; border-radius: 22px;
-    color: #e8eaed; outline: none; min-width: 0;
-  }
-  .composer input[type=text]:focus { border-color: #58a6ff; }
-  .composer .icon-btn {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: #21262d; border: none; color: #58a6ff;
-    font-size: 20px; cursor: pointer; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    transition: background .15s, transform .1s;
-  }
-  .composer .icon-btn:hover { background: #30363d; }
-  .composer .icon-btn:active { transform: scale(.9); }
-  .composer .send {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: #238636; border: none; color: #fff;
-    font-size: 18px; cursor: pointer; flex-shrink: 0;
-    transition: background .15s, transform .1s;
-  }
-  .composer .send:active { transform: scale(.9); }
-  .composer .send:hover { background: #2ea043; }
-  .recording-bar {
-    display: none; flex: 1; align-items: center; gap: 10px;
-    padding: 8px 16px; background: #21262d;
-    border-radius: 22px;
-    animation: msgIn .2s ease;
-  }
-  .recording-bar.active { display: flex; }
-  .recording-bar .dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: #f85149;
-    animation: pulse 1s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50%      { opacity: .4; transform: scale(.8); }
-  }
-  .recording-bar .timer {
-    flex: 1; font-family: 'SF Mono', Consolas, monospace;
-    color: #f85149; font-size: 15px;
-  }
-  .composer .cancel-rec {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: #21262d; border: none; color: #f85149;
-    font-size: 20px; cursor: pointer; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .composer .send-rec {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: #238636; border: none; color: #fff;
-    font-size: 18px; cursor: pointer; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .empty { text-align: center; color: #8b949e; padding: 40px 20px; font-size: 14px; }
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,.6);
-    display: none; align-items: center; justify-content: center;
-    z-index: 100; padding: 20px; opacity: 0;
-    transition: opacity .2s;
-  }
-  .modal-overlay.active {
-    display: flex; opacity: 1;
-    animation: fadeIn .2s ease;
-  }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  .modal {
-    background: #161b22; border-radius: 16px; padding: 24px;
-    width: 100%; max-width: 400px;
-    animation: modalIn .25s cubic-bezier(.2,.9,.4,1.2);
-  }
-  @keyframes modalIn {
-    from { transform: scale(.85) translateY(20px); opacity: 0; }
-    to   { transform: scale(1) translateY(0); opacity: 1; }
-  }
-  .tabs {
-    display: flex; background: #161b22; padding: 4px;
-    border-radius: 12px; margin-bottom: 16px;
-  }
-  .tab {
-    flex: 1; padding: 10px; text-align: center;
-    border-radius: 8px; cursor: pointer; font-size: 14px;
-    color: #8b949e; transition: all .2s;
-  }
-  .tab.active { background: #21262d; color: #e8eaed; font-weight: 600; }
-  .code-input {
-    font-family: 'SF Mono', Consolas, monospace;
-    text-transform: uppercase; letter-spacing: 2px;
-    text-align: center; font-size: 18px;
-  }
-</style>
-</head>
-<body>
-<div id="app">
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import multer from 'multer';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { customAlphabet } from 'nanoid';
 
-<div id="screen-auth" class="screen active">
-  <div class="content center">
-    <div style="text-align:center; font-size:56px; margin-bottom:8px;">💬</div>
-    <div class="title">СОУЧ Май</div>
-    <div class="subtitle">Мессенджер для своих</div>
-    <div class="tabs">
-      <div class="tab active" data-tab="register">Регистрация</div>
-      <div class="tab" data-tab="login">Вход</div>
-    </div>
-    <div id="form-register">
-      <input id="reg-name" class="field" placeholder="Твоё имя" maxlength="30">
-      <input id="reg-pass" class="field" type="password" placeholder="Пароль (мин. 4 символа)">
-      <div id="reg-error" class="error"></div>
-      <button id="btn-register" class="btn">Создать аккаунт</button>
-    </div>
-    <div id="form-login" style="display:none;">
-      <input id="login-code" class="field code-input" placeholder="SOUCH-XXXX-XXXX">
-      <input id="login-pass" class="field" type="password" placeholder="Пароль">
-      <div id="login-error" class="error"></div>
-      <button id="btn-login" class="btn">Войти</button>
-    </div>
-  </div>
-</div>
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: '*' } });
 
-<div id="screen-mycode" class="screen">
-  <div class="header">
-    <span class="logo">💬</span>
-    <h1>СОУЧ Май</h1>
-    <button class="btn small secondary" id="btn-logout">Выйти</button>
-  </div>
-  <div class="content">
-    <div class="my-code-box">
-      <div class="label">Твой личный код</div>
-      <div class="code" id="my-code-display">SOUCH-XXXX-XXXX</div>
-      <button class="btn secondary" id="btn-copy">📋 Скопировать</button>
-    </div>
-    <button class="btn secondary" id="btn-go-find" style="margin-bottom:8px;">🔍 Найти друга по коду</button>
-    <button class="btn secondary" id="btn-go-chats">💬 Мои чаты</button>
-    <div style="text-align:center; color:#8b949e; font-size:12px; margin-top:24px;">
-      Поделись своим кодом с друзьями,<br>чтобы они могли написать тебе
-    </div>
-  </div>
-</div>
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-<div id="screen-find" class="screen">
-  <div class="header">
-    <button class="back" onclick="showScreen('screen-mycode')">←</button>
-    <h1>Найти по коду</h1>
-  </div>
-  <div class="content">
-    <input id="find-code" class="field code-input" placeholder="SOUCH-XXXX-XXXX">
-    <div id="find-error" class="error"></div>
-    <button id="btn-find" class="btn">Найти</button>
-  </div>
-</div>
+const users = new Map();
+const usersByCode = new Map();
+const chats = new Map();
+const messages = new Map();
 
-<div id="screen-chats" class="screen">
-  <div class="header">
-    <button class="back" onclick="showScreen('screen-mycode')">←</button>
-    <h1>Мои чаты</h1>
-  </div>
-  <div class="content" id="chats-list">
-    <div class="empty">Пока нет чатов</div>
-  </div>
-</div>
+const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const nano4 = customAlphabet(CODE_CHARS, 4);
+const nanoId = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 12);
 
-<div id="screen-chat" class="screen">
-  <div class="header">
-    <button class="back" onclick="backToChats()">←</button>
-    <div class="avatar" id="chat-avatar" style="width:36px;height:36px;font-size:14px;"></div>
-    <div style="flex:1; min-width:0;">
-      <h1 id="chat-name" style="font-size:16px; margin:0;">...</h1>
-      <div id="chat-code" style="font-size:11px; color:#8b949e; font-family:monospace;"></div>
-    </div>
-  </div>
-  <div class="messages" id="messages"></div>
-  <div class="composer">
-    <button class="icon-btn" id="btn-attach">📎</button>
-    <input type="file" id="file-input" accept="image/*" style="display:none;">
-
-    <input type="text" id="msg-input" placeholder="Сообщение...">
-
-    <div class="recording-bar" id="recording-bar">
-      <div class="dot"></div>
-      <div class="timer" id="rec-timer">0:00</div>
-    </div>
-
-    <button class="icon-btn" id="btn-mic">🎤</button>
-    <button class="send" id="btn-send">➤</button>
-
-    <button class="cancel-rec" id="btn-cancel-rec" style="display:none;">✕</button>
-    <button class="send-rec" id="btn-send-rec" style="display:none;">➤</button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal-found">
-  <div class="modal">
-    <div style="text-align:center; margin-bottom:16px;">
-      <div class="avatar" style="width:64px;height:64px;font-size:26px;margin:0 auto 12px;" id="found-avatar"></div>
-      <div style="font-size:20px; font-weight:600;" id="found-name"></div>
-      <div style="font-size:12px; color:#8b949e; font-family:monospace; margin-top:4px;" id="found-code"></div>
-    </div>
-    <button class="btn" id="btn-start-chat">Начать чат</button>
-    <button class="btn secondary" style="margin-top:8px;" onclick="closeModal('modal-found')">Отмена</button>
-  </div>
-</div>
-
-</div>
-
-<script src="/socket.io/socket.io.js"></script>
-<script>
-const API_BASE = '';
-let me = null;
-let socket = null;
-let currentChat = null;
-let foundUser = null;
-
-let mediaRecorder = null;
-let audioChunks = [];
-let recStartTime = 0;
-let recTimerInterval = null;
-let recStream = null;
-
-const $ = id => document.getElementById(id);
-const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const initials = name => name.trim().slice(0, 2).toUpperCase();
-const fmtTime = ts => new Date(ts).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-const fmtDur = sec => `${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`;
-
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const target = $(id);
-  void target.offsetWidth;
-  target.classList.add('active');
-  if (id === 'screen-chat') scrollMessages();
+function generateUniqueCode() {
+  for (let i = 0; i < 30; i++) {
+    const code = `SOUCH-${nano4()}-${nano4()}`;
+    if (!usersByCode.has(code)) return code;
+  }
+  throw new Error('Не удалось сгенерировать код');
 }
-function openModal(id) { $(id).classList.add('active'); }
-function closeModal(id) { $(id).classList.remove('active'); }
-function saveMe() { if (me) localStorage.setItem('souch_me', JSON.stringify(me)); else localStorage.removeItem('souch_me'); }
 
-// ===== ФИКС КЛАВИАТУРЫ (Samsung + Honor + все остальные) =====
-function setupViewport() {
-  const root = document.documentElement;
-  const updateVh = () => {
-    root.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-  };
-  updateVh();
-  window.addEventListener('resize', updateVh);
-  window.addEventListener('orientationchange', () => setTimeout(updateVh, 300));
-
-  if (window.visualViewport) {
-    const vv = window.visualViewport;
-    const onVV = () => {
-      const kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-      root.style.setProperty('--kb-offset', `${kb}px`);
-      if (kb > 0) {
-        setTimeout(scrollMessages, 50);
-      }
-    };
-    vv.addEventListener('resize', onVV);
-    vv.addEventListener('scroll', onVV);
-    onVV();
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 15 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('audio/')) cb(null, true);
+    else cb(new Error('Только изображения и аудио'));
   }
+});
 
-  // Дополнительная страховка для Android WebView
-  const app = document.getElementById('app');
-  if (app) {
-    const syncHeight = () => {
-      app.style.height = window.visualViewport
-        ? window.visualViewport.height + 'px'
-        : window.innerHeight + 'px';
+app.post('/api/register', (req, res) => {
+  const { display_name, password } = req.body;
+  if (!display_name || display_name.trim().length < 2)
+    return res.status(400).json({ error: 'Имя минимум 2 символа' });
+  if (!password || password.length < 4)
+    return res.status(400).json({ error: 'Пароль минимум 4 символа' });
+
+  const id = nanoId();
+  const code = generateUniqueCode();
+  const user = { id, user_code: code, display_name: display_name.trim(), password };
+  users.set(id, user);
+  usersByCode.set(code, id);
+
+  res.json({ id, user_code: code, display_name: user.display_name });
+});
+
+app.post('/api/login', (req, res) => {
+  const { user_code, password } = req.body;
+  const id = usersByCode.get((user_code || '').toUpperCase().trim());
+  const user = id ? users.get(id) : null;
+  if (!user || user.password !== password)
+    return res.status(401).json({ error: 'Неверный код или пароль' });
+  res.json({ id: user.id, user_code: user.user_code, display_name: user.display_name });
+});
+
+app.get('/api/find', (req, res) => {
+  const code = (req.query.code || '').toUpperCase().trim();
+  const id = usersByCode.get(code);
+  const user = id ? users.get(id) : null;
+  if (!user) return res.status(404).json({ error: 'Пользователь не найден' });
+  res.json({ id: user.id, user_code: user.user_code, display_name: user.display_name });
+});
+
+app.post('/api/chat', (req, res) => {
+  const { my_id, other_id } = req.body;
+  if (my_id === other_id) return res.status(400).json({ error: 'Это вы' });
+
+  const [u1, u2] = [my_id, other_id].sort();
+  const chatId = u1 + '_' + u2;
+
+  if (!chats.has(chatId)) {
+    chats.set(chatId, { id: chatId, user1_id: u1, user2_id: u2 });
+    messages.set(chatId, []);
+  }
+  res.json(chats.get(chatId));
+});
+
+app.get('/api/messages/:chatId', (req, res) => {
+  res.json(messages.get(req.params.chatId) || []);
+});
+
+app.get('/api/chats/:userId', (req, res) => {
+  const list = [];
+  for (const chat of chats.values()) {
+    if (chat.user1_id !== req.params.userId && chat.user2_id !== req.params.userId) continue;
+    const otherId = chat.user1_id === req.params.userId ? chat.user2_id : chat.user1_id;
+    const other = users.get(otherId);
+    if (!other) continue;
+    list.push({
+      id: chat.id,
+      other_id: other.id,
+      other_name: other.display_name,
+      other_code: other.user_code
+    });
+  }
+  res.json(list);
+});
+
+app.post('/api/upload', upload.single('file'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'Нет файла' });
+  const b64 = req.file.buffer.toString('base64');
+  const dataUrl = `data:${req.file.mimetype};base64,${b64}`;
+  res.json({ url: dataUrl });
+});
+
+const onlineUsers = new Map();
+io.on('connection', (socket) => {
+  socket.on('auth', (userId) => {
+    onlineUsers.set(userId, socket.id);
+    socket.userId = userId;
+  });
+
+  socket.on('send_message', (payload, ack) => {
+    const msg = {
+      id: nanoId(),
+      chat_id: payload.chat_id,
+      sender_id: payload.sender_id,
+      type: payload.type,
+      content: payload.content,
+      created_at: Date.now()
     };
-    syncHeight();
-    window.addEventListener('resize', syncHeight);
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', syncHeight);
+    if (!messages.has(payload.chat_id)) messages.set(payload.chat_id, []);
+    messages.get(payload.chat_id).push(msg);
+
+    const chat = chats.get(payload.chat_id);
+    if (chat) {
+      const otherId = chat.user1_id === payload.sender_id ? chat.user2_id : chat.user1_id;
+      const otherSocket = onlineUsers.get(otherId);
+      if (otherSocket) io.to(otherSocket).emit('new_message', msg);
     }
-  }
-}
-setupViewport();
+    if (ack) ack(msg);
+  });
 
-// ===== ВКЛАДКИ =====
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    const isReg = tab.dataset.tab === 'register';
-    $('form-register').style.display = isReg ? 'block' : 'none';
-    $('form-login').style.display = isReg ? 'none' : 'block';
+  socket.on('disconnect', () => {
+    if (socket.userId) onlineUsers.delete(socket.userId);
   });
 });
 
-// ===== РЕГИСТРАЦИЯ =====
-$('btn-register').addEventListener('click', async () => {
-  const name = $('reg-name').value.trim();
-  const pass = $('reg-pass').value;
-  $('reg-error').textContent = '';
-  if (name.length < 2) return $('reg-error').textContent = 'Имя минимум 2 символа';
-  if (pass.length < 4) return $('reg-error').textContent = 'Пароль минимум 4 символа';
-  $('btn-register').disabled = true;
-  try {
-    const r = await fetch(API_BASE + '/api/register', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ display_name: name, password: pass })
-    });
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.error || 'Ошибка');
-    me = data; saveMe(); initApp();
-  } catch (e) { $('reg-error').textContent = e.message; }
-  finally { $('btn-register').disabled = false; }
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`СОУЧ Май: http://localhost:${PORT}`);
 });
-
-// ===== ВХОД =====
-$('btn-login').addEventListener('click', async () => {
-  const code = $('login-code').value.trim().toUpperCase();
-  const pass = $('login-pass').value;
-  $('login-error').textContent = '';
-  if (!code || !pass) return $('login-error').textContent = 'Заполни оба поля';
-  $('btn-login').disabled = true;
-  try {
-    const r = await fetch(API_BASE + '/api/login', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user_code: code, password: pass })
-    });
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.error || 'Ошибка');
-    me = data; saveMe(); initApp();
-  } catch (e) { $('login-error').textContent = e.message; }
-  finally { $('btn-login').disabled = false; }
-});
-
-// ===== КОПИРОВАНИЕ =====
-$('btn-copy').addEventListener('click', async () => {
-  try {
-    await navigator.clipboard.writeText(me.user_code);
-    $('btn-copy').textContent = '✅ Скопировано';
-    setTimeout(() => $('btn-copy').textContent = '📋 Скопировать', 1500);
-  } catch { alert('Твой код: ' + me.user_code); }
-});
-
-// ===== ВЫХОД =====
-$('btn-logout').addEventListener('click', () => {
-  if (!confirm('Выйти?')) return;
-  me = null; saveMe();
-  if (socket) socket.disconnect();
-  socket = null;
-  showScreen('screen-auth');
-});
-
-// ===== НАВИГАЦИЯ =====
-$('btn-go-find').addEventListener('click', () => {
-  $('find-code').value = ''; $('find-error').textContent = '';
-  showScreen('screen-find');
-});
-$('btn-go-chats').addEventListener('click', () => { showScreen('screen-chats'); loadChats(); });
-
-// ===== ПОИСК =====
-$('btn-find').addEventListener('click', async () => {
-  const code = $('find-code').value.trim().toUpperCase();
-  $('find-error').textContent = '';
-  if (!code) return $('find-error').textContent = 'Введи код';
-  $('btn-find').disabled = true;
-  try {
-    const r = await fetch(API_BASE + '/api/find?code=' + encodeURIComponent(code));
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.error || 'Не найдено');
-    if (data.id === me.id) throw new Error('Это твой собственный код');
-    foundUser = data;
-    $('found-name').textContent = data.display_name;
-    $('found-code').textContent = data.user_code;
-    $('found-avatar').textContent = initials(data.display_name);
-    openModal('modal-found');
-  } catch (e) { $('find-error').textContent = e.message; }
-  finally { $('btn-find').disabled = false; }
-});
-
-$('btn-start-chat').addEventListener('click', async () => {
-  if (!foundUser) return;
-  closeModal('modal-found');
-  try {
-    const r = await fetch(API_BASE + '/api/chat', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ my_id: me.id, other_id: foundUser.id })
-    });
-    const chat = await r.json();
-    if (!r.ok) throw new Error(chat.error || 'Ошибка');
-    openChat({ id: chat.id, other_id: foundUser.id, other_name: foundUser.display_name, other_code: foundUser.user_code });
-  } catch (e) { alert(e.message); }
-});
-
-// ===== СПИСОК ЧАТОВ =====
-async function loadChats() {
-  const list = $('chats-list');
-  try {
-    const r = await fetch(API_BASE + '/api/chats/' + me.id);
-    const chats = await r.json();
-    if (!chats.length) { list.innerHTML = '<div class="empty">Пока нет чатов.<br>Найди друга по коду!</div>'; return; }
-    list.innerHTML = chats.map(c => `
-      <div class="chat-item" data-id="${esc(c.id)}" data-oid="${esc(c.other_id)}" data-oname="${esc(c.other_name)}" data-ocode="${esc(c.other_code)}">
-        <div class="avatar">${esc(initials(c.other_name))}</div>
-        <div class="info">
-          <div class="name">${esc(c.other_name)}</div>
-          <div class="code">${esc(c.other_code)}</div>
-        </div>
-      </div>`).join('');
-    list.querySelectorAll('.chat-item').forEach(el => {
-      el.addEventListener('click', () => openChat({
-        id: el.dataset.id, other_id: el.dataset.oid,
-        other_name: el.dataset.oname, other_code: el.dataset.ocode
-      }));
-    });
-  } catch { list.innerHTML = '<div class="empty">Не удалось загрузить</div>'; }
-}
-
-// ===== ОТКРЫТИЕ ЧАТА =====
-async function openChat(chat) {
-  currentChat = chat;
-  $('chat-name').textContent = chat.other_name;
-  $('chat-code').textContent = chat.other_code;
-  $('chat-avatar').textContent = initials(chat.other_name);
-  $('messages').innerHTML = '';
-  showScreen('screen-chat');
-  try {
-    const r = await fetch(API_BASE + '/api/messages/' + chat.id);
-    const msgs = await r.json();
-    msgs.forEach(renderMessage);
-    scrollMessages();
-  } catch {}
-}
-
-function backToChats() { currentChat = null; showScreen('screen-chats'); loadChats(); }
-
-// ===== ОТРИСОВКА СООБЩЕНИЯ =====
-function renderMessage(m) {
-  const box = $('messages');
-  const div = document.createElement('div');
-  div.className = 'msg ' + (m.sender_id === me.id ? 'me' : 'them');
-  if (m.type === 'image') {
-    div.innerHTML = `<img src="${esc(m.content)}" alt="" loading="lazy"><div class="time">${fmtTime(m.created_at)}</div>`;
-  } else if (m.type === 'audio') {
-    div.innerHTML = `<audio controls src="${esc(m.content)}"></audio><div class="time">${fmtTime(m.created_at)}</div>`;
-  } else {
-    div.innerHTML = `${esc(m.content)}<div class="time">${fmtTime(m.created_at)}</div>`;
-  }
-  box.appendChild(div);
-  scrollMessages();
-}
-function scrollMessages() { const box = $('messages'); if (box) box.scrollTop = box.scrollHeight; }
-
-// ===== ОТПРАВКА ТЕКСТА =====
-function sendMessage() {
-  const input = $('msg-input');
-  const text = input.value.trim();
-  if (!text || !currentChat || !socket) return;
-  socket.emit('send_message', {
-    chat_id: currentChat.id, sender_id: me.id, type: 'text', content: text
-  }, (msg) => renderMessage(msg));
-  input.value = '';
-  input.focus();
-}
-$('btn-send').addEventListener('click', sendMessage);
-$('msg-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
-});
-
-// ===== КАРТИНКА =====
-$('btn-attach').addEventListener('click', () => $('file-input').click());
-$('file-input').addEventListener('change', async (e) => {
-  const file = e.target.files[0];
-  e.target.value = '';
-  if (!file || !currentChat) return;
-  if (file.size > 15 * 1024 * 1024) return alert('Файл больше 15 МБ');
-  const fd = new FormData();
-  fd.append('file', file);
-  try {
-    const r = await fetch(API_BASE + '/api/upload', { method: 'POST', body: fd });
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.error || 'Ошибка загрузки');
-    socket.emit('send_message', {
-      chat_id: currentChat.id, sender_id: me.id, type: 'image', content: data.url
-    }, (msg) => renderMessage(msg));
-  } catch (err) { alert('Не удалось отправить: ' + err.message); }
-});
-
-// ===== ГОЛОСОВЫЕ =====
-$('btn-mic').addEventListener('click', startRecording);
-$('btn-cancel-rec').addEventListener('click', () => stopRecording(false));
-$('btn-send-rec').addEventListener('click', () => stopRecording(true));
-
-async function startRecording() {
-  if (!currentChat) return alert('Открой чат');
-  if (!navigator.mediaDevices || !window.MediaRecorder) {
-    return alert('Твой браузер не поддерживает запись звука');
-  }
-  try {
-    recStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  } catch (e) {
-    return alert('Нет доступа к микрофону. Разреши его в настройках.');
-  }
-
-  audioChunks = [];
-  let mimeType = '';
-  const candidates = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
-  for (const c of candidates) {
-    if (MediaRecorder.isTypeSupported(c)) { mimeType = c; break; }
-  }
-  try {
-    mediaRecorder = new MediaRecorder(recStream, mimeType ? { mimeType } : undefined);
-  } catch (e) {
-    mediaRecorder = new MediaRecorder(recStream);
-  }
-
-  mediaRecorder.ondataavailable = (ev) => {
-    if (ev.data && ev.data.size > 0) audioChunks.push(ev.data);
-  };
-  mediaRecorder.onstop = async () => {
-    const shouldSend = mediaRecorder._shouldSend;
-    try {
-      if (recStream) recStream.getTracks().forEach(t => t.stop());
-    } catch {}
-    recStream = null;
-    if (!shouldSend) return;
-    const dur = Math.floor((Date.now() - recStartTime) / 1000);
-    if (dur < 1) return;
-    if (!audioChunks.length) return;
-    const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
-    audioChunks = [];
-    await sendVoice(blob);
-  };
-
-  mediaRecorder.start();
-  recStartTime = Date.now();
-  showRecUI(true);
-  updateRecTimer();
-  recTimerInterval = setInterval(updateRecTimer, 250);
-
-  // Автостоп через 3 минуты
-  setTimeout(() => {
-    if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording(true);
-  }, 3 * 60 * 1000);
-}
-
-function updateRecTimer() {
-  const sec = Math.floor((Date.now() - recStartTime) / 1000);
-  $('rec-timer').textContent = fmtDur(sec);
-}
-
-function showRecUI(active) {
-  $('recording-bar').classList.toggle('active', active);
-  $('msg-input').style.display = active ? 'none' : '';
-  $('btn-mic').style.display = active ? 'none' : '';
-  $('btn-send').style.display = active ? 'none' : '';
-  $('btn-attach').style.display = active ? 'none' : '';
-  $('btn-cancel-rec').style.display = active ? 'flex' : 'none';
-  $('btn-send-rec').style.display = active ? 'flex' : 'none';
-}
-
-function stopRecording(send) {
-  if (!mediaRecorder) return;
-  if (mediaRecorder.state !== 'recording') return;
-  mediaRecorder._shouldSend = send;
-  try { mediaRecorder.stop(); } catch {}
-  clearInterval(recTimerInterval);
-  recTimerInterval = null;
-  showRecUI(false);
-}
-
-async function sendVoice(blob) {
-  if (!currentChat) return;
-  const fd = new FormData();
-  const ext = (blob.type.includes('mp4') ? 'm4a' : blob.type.includes('ogg') ? 'ogg' : 'webm');
-  fd.append('file', blob, `voice_${Date.now()}.${ext}`);
-  try {
-    const r = await fetch(API_BASE + '/api/upload', { method: 'POST', body: fd });
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.error || 'Ошибка');
-    socket.emit('send_message', {
-      chat_id: currentChat.id, sender_id: me.id, type: 'audio', content: data.url
-    }, (msg) => renderMessage(msg));
-  } catch (err) { alert('Не удалось отправить голосовое: ' + err.message); }
-}
-
-// ===== WEBSOCKET =====
-function connectSocket() {
-  socket = io(API_BASE || undefined);
-  socket.on('connect', () => socket.emit('auth', me.id));
-  socket.on('new_message', (msg) => {
-    if (currentChat && msg.chat_id === currentChat.id) renderMessage(msg);
-  });
-}
-
-// ===== СТАРТ =====
-function initApp() {
-  $('my-code-display').textContent = me.user_code;
-  showScreen('screen-mycode');
-  connectSocket();
-}
-
-(function boot() {
-  const saved = localStorage.getItem('souch_me');
-  if (saved) { try { me = JSON.parse(saved); initApp(); } catch { me = null; } }
-})();
-</script>
-</body>
-</html>
