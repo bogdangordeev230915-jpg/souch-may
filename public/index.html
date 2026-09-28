@@ -90,7 +90,6 @@
     box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 0 0 3px rgba(88,166,255,.15), 0 4px 16px rgba(0,0,0,.25);
     background: rgba(22, 27, 34, .7);
   }
-  /* Переливающееся поле, когда что-то введено */
   .field.has-value {
     animation: fieldGlow 2.5s ease-in-out infinite;
     border-color: rgba(88,166,255,.55);
@@ -137,7 +136,6 @@
   .title { font-size: 28px; font-weight: 700; margin-bottom: 8px; text-align: center; }
   .subtitle { color: #8b949e; margin-bottom: 20px; text-align: center; font-size: 14px; }
 
-  /* Приветствие над полями */
   .welcome-msg {
     text-align: center;
     margin-bottom: 20px;
@@ -159,7 +157,6 @@
 
   .error { color: #f85149; font-size: 14px; margin-bottom: 12px; min-height: 18px; }
 
-  /* Мой код */
   .my-code-box {
     background: rgba(22, 27, 34, .5);
     backdrop-filter: blur(24px) saturate(180%);
@@ -190,7 +187,6 @@
     text-shadow: 0 0 20px rgba(88,166,255,.5);
   }
 
-  /* Аватар */
   .avatar {
     width: 44px; height: 44px; border-radius: 50%;
     background: linear-gradient(135deg, #58a6ff, #3fb950);
@@ -208,7 +204,6 @@
     font-size: 0;
   }
 
-  /* Профиль */
   .profile-avatar-wrap {
     display: flex; flex-direction: column; align-items: center;
     margin-bottom: 20px;
@@ -224,6 +219,7 @@
     overflow: hidden; position: relative;
     background-size: cover; background-position: center;
     transition: transform .2s;
+    cursor: pointer;
   }
   .profile-avatar:active { transform: scale(.97); }
   .profile-avatar.has-img { color: transparent; font-size: 0; }
@@ -461,7 +457,6 @@
   }
   ::-webkit-scrollbar { width: 0; height: 0; }
 
-  /* Диалоги */
   .dlg-btn-dark {
     padding: 14px; border-radius: 14px;
     border: 1px solid rgba(255,255,255,.15);
@@ -496,7 +491,6 @@
 <body>
 <div id="app">
 
-<!-- ЭКРАН ВХОДА -->
 <div id="screen-auth" class="screen active">
   <div class="content center">
     <div style="text-align:center; font-size:56px; margin-bottom:8px; filter: drop-shadow(0 0 30px rgba(88,166,255,.6));">💬</div>
@@ -526,7 +520,6 @@
   </div>
 </div>
 
-<!-- ПРОФИЛЬ / МОЙ КОД -->
 <div id="screen-mycode" class="screen">
   <div class="header">
     <span class="logo">💬</span>
@@ -554,7 +547,6 @@
   </div>
 </div>
 
-<!-- ПОИСК -->
 <div id="screen-find" class="screen">
   <div class="header">
     <button class="back" onclick="showScreen('screen-mycode')">←</button>
@@ -567,7 +559,6 @@
   </div>
 </div>
 
-<!-- ЧАТЫ -->
 <div id="screen-chats" class="screen">
   <div class="header">
     <button class="back" onclick="showScreen('screen-mycode')">←</button>
@@ -578,7 +569,6 @@
   </div>
 </div>
 
-<!-- ЧАТ -->
 <div id="screen-chat" class="screen">
   <div class="header">
     <button class="back" onclick="backToChats()">←</button>
@@ -604,7 +594,6 @@
   </div>
 </div>
 
-<!-- Модалка: найден пользователь -->
 <div class="modal-overlay" id="modal-found">
   <div class="modal">
     <div style="text-align:center; margin-bottom:16px;">
@@ -617,7 +606,6 @@
   </div>
 </div>
 
-<!-- Модалка: нет интернета -->
 <div class="modal-overlay" id="modal-offline">
   <div class="modal offline-modal">
     <div class="dlg-icon offline">🌐</div>
@@ -628,7 +616,6 @@
   </div>
 </div>
 
-<!-- Модалка: выход -->
 <div class="modal-overlay" id="modal-logout">
   <div class="modal">
     <div class="dlg-icon warn">⚠️</div>
@@ -662,7 +649,6 @@ const initials = name => (name || '?').trim().slice(0, 2).toUpperCase();
 const fmtTime = ts => new Date(ts).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 const fmtDur = sec => `${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`;
 
-/* Помощник: рендер аватара с картинкой или инициалами */
 function setAvatar(el, user) {
   if (!el) return;
   if (user && user.avatar) {
@@ -687,7 +673,6 @@ function openModal(id) { $(id).classList.add('active'); }
 function closeModal(id) { $(id).classList.remove('active'); }
 function saveMe() { if (me) localStorage.setItem('souch_me', JSON.stringify(me)); else localStorage.removeItem('souch_me'); }
 
-/* ===== ПРИВЕТСТВИЕ ПО ВКЛАДКЕ ===== */
 function updateWelcome(tab) {
   const el = $('welcome-msg');
   if (tab === 'login') {
@@ -700,7 +685,6 @@ function updateWelcome(tab) {
   el.style.animation = '';
 }
 
-/* ===== ПЕРЕЛИВАЮЩИЕСЯ ПОЛЯ ===== */
 function bindFieldGlow(input) {
   const upd = () => {
     if (input.value && input.value.trim().length > 0) input.classList.add('has-value');
@@ -715,7 +699,6 @@ function bindFieldGlow(input) {
   if (el) bindFieldGlow(el);
 });
 
-/* ===== ОФФЛАЙН ===== */
 function updateOnlineStatus() {
   if (!navigator.onLine) {
     if (!offlineShown) { openModal('modal-offline'); offlineShown = true; }
@@ -728,7 +711,6 @@ window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 $('btn-offline-ok').addEventListener('click', () => closeModal('modal-offline'));
 
-/* ===== ВЫХОД ===== */
 $('btn-logout').addEventListener('click', () => openModal('modal-logout'));
 $('btn-logout-no').addEventListener('click', () => closeModal('modal-logout'));
 $('btn-logout-yes').addEventListener('click', () => {
@@ -742,7 +724,6 @@ $('btn-logout-yes').addEventListener('click', () => {
   });
 });
 
-/* ===== VIEWPORT ===== */
 function setupViewport() {
   const root = document.documentElement;
   const updateVh = () => { root.style.setProperty('--vh', `${window.innerHeight * 0.01}px`); };
@@ -772,7 +753,6 @@ function setupViewport() {
 }
 setupViewport();
 
-/* ===== ВКЛАДКИ ===== */
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -784,7 +764,6 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
-/* ===== РЕГИСТРАЦИЯ ===== */
 $('btn-register').addEventListener('click', async () => {
   if (!navigator.onLine) { updateOnlineStatus(); return; }
   const name = $('reg-name').value.trim();
@@ -808,7 +787,6 @@ $('btn-register').addEventListener('click', async () => {
   finally { $('btn-register').disabled = false; }
 });
 
-/* ===== ВХОД ===== */
 $('btn-login').addEventListener('click', async () => {
   if (!navigator.onLine) { updateOnlineStatus(); return; }
   const code = $('login-code').value.trim().toUpperCase();
@@ -831,14 +809,13 @@ $('btn-login').addEventListener('click', async () => {
   finally { $('btn-login').disabled = false; }
 });
 
-/* ===== АВАТАР ===== */
 $('my-avatar').addEventListener('click', () => $('avatar-input').click());
 $('avatar-input').addEventListener('change', async (e) => {
   const file = e.target.files[0];
   e.target.value = '';
   if (!file) return;
   if (!file.type.startsWith('image/')) return alert('Нужна картинка');
-  if (file.size > 3 * 1024 * 1024) return alert('Картинка больше 3 МБ');
+  if (file.size > 10 * 1024 * 1024) return alert('Картинка больше 10 МБ');
 
   const dataUrl = await new Promise((res, rej) => {
     const reader = new FileReader();
@@ -847,7 +824,6 @@ $('avatar-input').addEventListener('change', async (e) => {
     reader.readAsDataURL(file);
   });
 
-  /* Уменьшим картинку до 512x512 через canvas */
   const img = new Image();
   img.src = dataUrl;
   await new Promise(r => img.onload = r);
@@ -880,7 +856,6 @@ $('avatar-input').addEventListener('change', async (e) => {
   }
 });
 
-/* ===== КОПИРОВАНИЕ ===== */
 $('btn-copy').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(me.user_code);
@@ -889,7 +864,6 @@ $('btn-copy').addEventListener('click', async () => {
   } catch { alert('Твой код: ' + me.user_code); }
 });
 
-/* ===== НАВИГАЦИЯ ===== */
 $('btn-go-find').addEventListener('click', () => {
   $('find-code').value = ''; $('find-code').classList.remove('has-value');
   $('find-error').textContent = '';
@@ -897,7 +871,6 @@ $('btn-go-find').addEventListener('click', () => {
 });
 $('btn-go-chats').addEventListener('click', () => { showScreen('screen-chats'); loadChats(); });
 
-/* ===== ПОИСК ===== */
 $('btn-find').addEventListener('click', async () => {
   if (!navigator.onLine) { updateOnlineStatus(); return; }
   const code = $('find-code').value.trim().toUpperCase();
@@ -941,7 +914,6 @@ $('btn-start-chat').addEventListener('click', async () => {
   } catch (e) { alert(e.message); }
 });
 
-/* ===== СПИСОК ЧАТОВ ===== */
 async function loadChats() {
   const list = $('chats-list');
   try {
@@ -949,27 +921,26 @@ async function loadChats() {
     const chats = await r.json();
     if (!chats.length) { list.innerHTML = '<div class="empty">Пока нет чатов.<br>Найди друга по коду!</div>'; return; }
     list.innerHTML = chats.map(c => `
-      <div class="chat-item" data-id="${esc(c.id)}" data-oid="${esc(c.other_id)}" data-oname="${esc(c.other_name)}" data-ocode="${esc(c.other_code)}" data-oav="${c.other_avatar ? '1' : '0'}">
-        <div class="avatar" data-init="${esc(initials(c.other_name))}" style="${c.other_avatar ? `--av: url(${c.other_avatar}); background-image: var(--av);` : ''}"></div>
+      <div class="chat-item">
+        <div class="avatar"></div>
         <div class="info">
           <div class="name">${esc(c.other_name)}</div>
           <div class="code">${esc(c.other_code)}</div>
         </div>
       </div>`).join('');
     list.querySelectorAll('.chat-item').forEach((el, i) => {
-      const av = el.querySelector('.avatar');
       const c = chats[i];
+      const av = el.querySelector('.avatar');
       setAvatar(av, { display_name: c.other_name, avatar: c.other_avatar });
       el.addEventListener('click', () => openChat({
-        id: el.dataset.id, other_id: el.dataset.oid,
-        other_name: el.dataset.oname, other_code: el.dataset.ocode,
+        id: c.id, other_id: c.other_id,
+        other_name: c.other_name, other_code: c.other_code,
         other_avatar: c.other_avatar || null
       }));
     });
   } catch { list.innerHTML = '<div class="empty">Не удалось загрузить</div>'; }
 }
 
-/* ===== ОТКРЫТИЕ ЧАТА ===== */
 async function openChat(chat) {
   currentChat = chat;
   $('chat-name').textContent = chat.other_name;
@@ -987,7 +958,6 @@ async function openChat(chat) {
 
 function backToChats() { currentChat = null; showScreen('screen-chats'); loadChats(); }
 
-/* ===== СООБЩЕНИЯ ===== */
 function renderMessage(m) {
   const box = $('messages');
   const div = document.createElement('div');
@@ -1004,7 +974,6 @@ function renderMessage(m) {
 }
 function scrollMessages() { const box = $('messages'); if (box) box.scrollTop = box.scrollHeight; }
 
-/* ===== ОТПРАВКА ===== */
 function sendMessage() {
   if (!navigator.onLine) { updateOnlineStatus(); return; }
   const input = $('msg-input');
@@ -1022,7 +991,6 @@ $('msg-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
 });
 
-/* ===== КАРТИНКА ===== */
 $('btn-attach').addEventListener('click', () => $('file-input').click());
 $('file-input').addEventListener('change', async (e) => {
   if (!navigator.onLine) { updateOnlineStatus(); return; }
@@ -1045,7 +1013,6 @@ $('file-input').addEventListener('change', async (e) => {
   }
 });
 
-/* ===== ГОЛОСОВЫЕ ===== */
 $('btn-mic').addEventListener('click', startRecording);
 $('btn-cancel-rec').addEventListener('click', () => stopRecording(false));
 $('btn-send-rec').addEventListener('click', () => stopRecording(true));
@@ -1119,7 +1086,6 @@ async function sendVoice(blob) {
   } catch (err) { alert('Не удалось отправить голосовое: ' + err.message); }
 }
 
-/* ===== SOCKET ===== */
 function connectSocket() {
   socket = io(API_BASE || undefined);
   socket.on('connect', () => socket.emit('auth', me.id));
@@ -1129,7 +1095,6 @@ function connectSocket() {
   });
 }
 
-/* ===== СТАРТ ===== */
 function initApp() {
   $('my-code-display').textContent = me.user_code;
   setAvatar($('my-avatar'), me);
