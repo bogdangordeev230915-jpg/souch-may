@@ -13,9 +13,10 @@ const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Хранилище
 const users = new Map();
 const usersByCode = new Map();
 const chats = new Map();
@@ -33,12 +34,27 @@ function generateUniqueCode() {
   throw new Error('Не удалось сгенерировать код');
 }
 
+// Публичный вид пользователя (без пароля, но с аватаром)
+function publicUser(u) {
+  if (!u) return null;
+  return {
+    id: u.id,
+    user_code: u.user_code,
+    display_name: u.display_name,
+    avatar: u.avatar || null
+  };
+}
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 15 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('audio/')) cb(null, true);
-    else cb(new Error('Только изображения и аудио'));
+    if (
+      file.mimetype.startsWith('image/') ||
+      file.mimetype.startsWith('audio/') ||
+      file.mimetype.startsWith('video/')
+    ) cb(null, true);
+    else cb(new Error('Только изображения, аудио и видео'));
   }
 });
 
@@ -51,11 +67,17 @@ app.post('/api/register', (req, res) => {
 
   const id = nanoId();
   const code = generateUniqueCode();
-  const user = { id, user_code: code, display_name: display_name.trim(), password };
+  const user = {
+    id,
+    user_code: code,
+    display_name: display_name.trim(),
+    password,
+    avatar: null
+  };
   users.set(id, user);
   usersByCode.set(code, id);
 
-  res.json({ id, user_code: code, display_name: user.display_name });
+  res.json(publicUser(user));
 });
 
 app.post('/api/login', (req, res) => {
@@ -63,16 +85,29 @@ app.post('/api/login', (req, res) => {
   const id = usersByCode.get((user_code || '').toUpperCase().trim());
   const user = id ? users.get(id) : null;
   if (!user || user.password !== password)
-    return res.status(401).json({ error: 'Неверный код или пароль' });
-  res.json({ id: user.id, user_code: user.user_code, display_name: user.display_name });
+    return res.status(401).json({ error: 'Ничего не нашли в данных' });
+  res.json(publicUser(user));
 });
 
 app.get('/api/find', (req, res) => {
   const code = (req.query.code || '').toUpperCase().trim();
   const id = usersByCode.get(code);
   const user = id ? users.get(id) : null;
+  if (!user) return res.status(404).json({ error: 'Ничего не нашли в данных' });
+  res.json(publicUser(user));
+});
+
+// ====== НОВОЕ: смена аватара ======
+app.post('/api/avatar', (req, res) => {
+  const { user_id, avatar } = req.body;
+  const user = users.get(user_id);
   if (!user) return res.status(404).json({ error: 'Пользователь не найден' });
-  res.json({ id: user.id, user_code: user.user_code, display_name: user.display_name });
+  if (typeof avatar !== 'string' || avatar.length > 5 * 1024 * 1024)
+    return res.status(400).json({ error: 'Слишком большое изображение' });
+  if (avatar && !avatar.startsWith('data:image/'))
+    return res.status(400).json({ error: 'Неверный формат' });
+  user.avatar = avatar || null;
+  res.json(publicUser(user));
 });
 
 app.post('/api/chat', (req, res) => {
@@ -104,7 +139,8 @@ app.get('/api/chats/:userId', (req, res) => {
       id: chat.id,
       other_id: other.id,
       other_name: other.display_name,
-      other_code: other.user_code
+      other_code: other.user_code,
+      other_avatar: other.avatar || null
     });
   }
   res.json(list);
