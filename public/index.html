@@ -14,7 +14,6 @@
     display: flex; flex-direction: column;
     overscroll-behavior: none;
     position: fixed; inset: 0;
-    /* ==== СТЕКЛЯННЫЙ ФОН ==== */
     background:
       radial-gradient(circle at 20% 10%, rgba(88,166,255,.25), transparent 45%),
       radial-gradient(circle at 80% 80%, rgba(63,185,80,.18), transparent 45%),
@@ -22,8 +21,6 @@
       linear-gradient(135deg, #0a0d12 0%, #0e1116 50%, #0a0d12 100%);
     background-attachment: fixed;
   }
-
-  /* Размытые цветные пятна на фоне */
   body::before {
     content: '';
     position: fixed; inset: -50%;
@@ -38,22 +35,18 @@
     from { transform: translate(0, 0) scale(1); }
     to   { transform: translate(5%, -5%) scale(1.1); }
   }
-
   #app {
     display: flex; flex-direction: column;
     width: 100%;
     height: calc(var(--vh, 1vh) * 100);
     position: relative; z-index: 1;
   }
-
   .screen { display: none; flex: 1; flex-direction: column; overflow: hidden; opacity: 0; }
   .screen.active { display: flex; animation: screenFadeIn .3s ease forwards; }
   @keyframes screenFadeIn {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-
-  /* ==== ШАПКА: СТЕКЛО ==== */
   .header {
     padding: 14px 16px;
     background: rgba(22, 27, 34, .55);
@@ -75,13 +68,9 @@
   }
   .header .back:active { transform: scale(.9); background: rgba(255,255,255,.1); }
   .header .logo { font-size: 22px; }
-
   .content { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
   .content.center { display: flex; flex-direction: column; justify-content: center; }
-
   input, button { font-family: inherit; font-size: 16px; }
-
-  /* ==== ПОЛЯ: СТЕКЛО ==== */
   .field {
     width: 100%; padding: 14px 16px;
     background: rgba(22, 27, 34, .55);
@@ -100,8 +89,6 @@
     box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 0 0 3px rgba(88,166,255,.15), 0 4px 16px rgba(0,0,0,.25);
     background: rgba(22, 27, 34, .7);
   }
-
-  /* ==== КНОПКИ: СТЕКЛО ==== */
   .btn {
     width: 100%; padding: 14px; border-radius: 14px;
     background: linear-gradient(135deg, rgba(35,134,54,.9), rgba(46,160,67,.85));
@@ -113,7 +100,7 @@
     box-shadow: 0 8px 24px rgba(35,134,54,.3), inset 0 1px 0 rgba(255,255,255,.15);
   }
   .btn:hover { box-shadow: 0 12px 28px rgba(35,134,54,.45), inset 0 1px 0 rgba(255,255,255,.2); }
-  .btn:active { transform: scale(.98); }
+  .btn:active { transform: scale(.97); }
   .btn:disabled { background: rgba(33,38,45,.6); color: #8b949e; cursor: not-allowed; box-shadow: none; }
   .btn.secondary {
     background: rgba(255,255,255,.06);
@@ -124,12 +111,9 @@
   }
   .btn.secondary:hover { background: rgba(255,255,255,.1); }
   .btn.small { width: auto; padding: 10px 16px; font-size: 14px; }
-
   .title { font-size: 28px; font-weight: 700; margin-bottom: 8px; text-align: center; }
   .subtitle { color: #8b949e; margin-bottom: 28px; text-align: center; font-size: 14px; }
   .error { color: #f85149; font-size: 14px; margin-bottom: 12px; min-height: 18px; }
-
-  /* ==== МОЙ КОД: СТЕКЛО ==== */
   .my-code-box {
     background: rgba(22, 27, 34, .5);
     backdrop-filter: blur(24px) saturate(180%);
@@ -159,8 +143,6 @@
     color: #58a6ff; margin-bottom: 20px; word-break: break-all;
     text-shadow: 0 0 20px rgba(88,166,255,.5);
   }
-
-  /* ==== КАРТОЧКИ ЧАТОВ: СТЕКЛО ==== */
   .chat-item {
     display: flex; align-items: center; gap: 12px;
     padding: 14px;
@@ -185,7 +167,6 @@
   }
   .chat-item:hover { background: rgba(28, 36, 48, .7); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 8px 24px rgba(0,0,0,.3); }
   .chat-item:active { transform: scale(.98); }
-
   .avatar {
     width: 44px; height: 44px; border-radius: 50%;
     background: linear-gradient(135deg, #58a6ff, #3fb950);
@@ -197,8 +178,6 @@
   .chat-item .info { flex: 1; min-width: 0; }
   .chat-item .name { font-weight: 600; margin-bottom: 2px; }
   .chat-item .code { color: #8b949e; font-size: 12px; font-family: monospace; }
-
-  /* ==== СООБЩЕНИЯ: СТЕКЛО ==== */
   .messages {
     flex: 1; overflow-y: auto; padding: 16px;
     display: flex; flex-direction: column; gap: 8px;
@@ -233,8 +212,6 @@
   .msg img { max-width: 100%; border-radius: 12px; display: block; }
   .msg audio { width: 240px; max-width: 100%; margin: 4px 0; }
   .msg .time { font-size: 10px; opacity: .65; margin-top: 4px; text-align: right; }
-
-  /* ==== ПОЛЕ ВВОДА: СТЕКЛО ==== */
   .composer {
     padding: 10px 12px;
     padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
@@ -287,8 +264,6 @@
     box-shadow: 0 4px 16px rgba(35,134,54,.4), inset 0 1px 0 rgba(255,255,255,.15);
   }
   .composer .send:active { transform: scale(.9); }
-
-  /* ==== ЗАПИСЬ ==== */
   .recording-bar {
     display: none; flex: 1; align-items: center; gap: 10px;
     padding: 8px 16px;
@@ -332,10 +307,7 @@
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 4px 16px rgba(35,134,54,.4);
   }
-
   .empty { text-align: center; color: #8b949e; padding: 40px 20px; font-size: 14px; }
-
-  /* ==== МОДАЛКА: СТЕКЛО ==== */
   .modal-overlay {
     position: fixed; inset: 0;
     background: rgba(0, 0, 0, .55);
@@ -368,8 +340,6 @@
     from { transform: scale(.85) translateY(20px); opacity: 0; }
     to   { transform: scale(1) translateY(0); opacity: 1; }
   }
-
-  /* ==== ВКЛАДКИ: СТЕКЛО ==== */
   .tabs {
     display: flex;
     background: rgba(22, 27, 34, .5);
@@ -389,15 +359,83 @@
     color: #e8eaed; font-weight: 600;
     box-shadow: 0 2px 8px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.1);
   }
-
   .code-input {
     font-family: 'SF Mono', Consolas, monospace;
     text-transform: uppercase; letter-spacing: 2px;
     text-align: center; font-size: 18px;
   }
-
-  /* Скрыть скроллбар */
   ::-webkit-scrollbar { width: 0; height: 0; }
+
+  /* ==== НОВЫЕ ДИАЛОГИ ==== */
+
+  /* Диалог: чёрная кнопка (главное действие) */
+  .dlg-btn-dark {
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.15);
+    background: linear-gradient(135deg, #05070a, #0e1116);
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: transform .1s, box-shadow .2s, background .2s;
+    box-shadow: 0 8px 24px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.1);
+    letter-spacing: .5px;
+  }
+  .dlg-btn-dark:hover { box-shadow: 0 12px 32px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.15); }
+  .dlg-btn-dark:active { transform: scale(.96); box-shadow: 0 4px 12px rgba(0,0,0,.5), inset 0 2px 4px rgba(0,0,0,.5); }
+
+  /* Диалог: бордовая кнопка (отмена) */
+  .dlg-btn-burgundy {
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,120,120,.25);
+    background: linear-gradient(135deg, #6b1f2b, #4a1520);
+    color: #ffe8e8;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: transform .1s, box-shadow .2s, background .2s;
+    box-shadow: 0 8px 24px rgba(107,31,43,.4), inset 0 1px 0 rgba(255,255,255,.1);
+    letter-spacing: .5px;
+  }
+  .dlg-btn-burgundy:hover { box-shadow: 0 12px 32px rgba(107,31,43,.6), inset 0 1px 0 rgba(255,255,255,.15); }
+  .dlg-btn-burgundy:active { transform: scale(.96); box-shadow: 0 4px 12px rgba(107,31,43,.5), inset 0 2px 4px rgba(0,0,0,.4); }
+
+  /* Иконка на диалоге */
+  .dlg-icon {
+    font-size: 52px;
+    text-align: center;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 30px rgba(88,166,255,.5));
+    animation: scaleIn .4s ease;
+  }
+  .dlg-icon.offline { filter: drop-shadow(0 0 30px rgba(88,166,255,.7)); }
+  .dlg-icon.warn { filter: drop-shadow(0 0 30px rgba(248,81,73,.6)); }
+
+  .dlg-title {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1.4;
+    color: #e8eaed;
+  }
+
+  .dlg-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Анимация появления оффлайн-диалога */
+  @keyframes offlineShow {
+    from { transform: scale(.85) translateY(30px); opacity: 0; }
+    to   { transform: scale(1) translateY(0); opacity: 1; }
+  }
+  .modal.offline-modal {
+    animation: offlineShow .4s cubic-bezier(.2,.9,.4,1.2);
+  }
 </style>
 </head>
 <body>
@@ -494,6 +532,7 @@
   </div>
 </div>
 
+<!-- Модалка: найден пользователь -->
 <div class="modal-overlay" id="modal-found">
   <div class="modal">
     <div style="text-align:center; margin-bottom:16px;">
@@ -503,6 +542,29 @@
     </div>
     <button class="btn" id="btn-start-chat">Начать чат</button>
     <button class="btn secondary" style="margin-top:8px;" onclick="closeModal('modal-found')">Отмена</button>
+  </div>
+</div>
+
+<!-- Модалка: НЕТ ИНТЕРНЕТА -->
+<div class="modal-overlay" id="modal-offline">
+  <div class="modal offline-modal">
+    <div class="dlg-icon offline">🌐</div>
+    <div class="dlg-title">Извините, у вас пропало интернет соединение</div>
+    <div class="dlg-buttons">
+      <button class="dlg-btn-dark" id="btn-offline-ok">ОК</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка: ПОДТВЕРЖДЕНИЕ ВЫХОДА -->
+<div class="modal-overlay" id="modal-logout">
+  <div class="modal">
+    <div class="dlg-icon warn">⚠️</div>
+    <div class="dlg-title">Вы хотите удалить все данные СОУЧ Май?</div>
+    <div class="dlg-buttons">
+      <button class="dlg-btn-dark" id="btn-logout-yes">ДА</button>
+      <button class="dlg-btn-burgundy" id="btn-logout-no">НЕТ</button>
+    </div>
   </div>
 </div>
 
@@ -520,6 +582,7 @@ let audioChunks = [];
 let recStartTime = 0;
 let recTimerInterval = null;
 let recStream = null;
+let offlineShown = false;
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -538,6 +601,46 @@ function openModal(id) { $(id).classList.add('active'); }
 function closeModal(id) { $(id).classList.remove('active'); }
 function saveMe() { if (me) localStorage.setItem('souch_me', JSON.stringify(me)); else localStorage.removeItem('souch_me'); }
 
+/* ============ ОФФЛАЙН-МОНИТОРИНГ ============ */
+function updateOnlineStatus() {
+  if (!navigator.onLine) {
+    if (!offlineShown) {
+      openModal('modal-offline');
+      offlineShown = true;
+    }
+  } else {
+    offlineShown = false;
+    closeModal('modal-offline');
+  }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
+$('btn-offline-ok').addEventListener('click', () => {
+  closeModal('modal-offline');
+});
+
+/* ============ ПОДТВЕРЖДЕНИЕ ВЫХОДА ============ */
+$('btn-logout').addEventListener('click', () => {
+  openModal('modal-logout');
+});
+$('btn-logout-no').addEventListener('click', () => {
+  closeModal('modal-logout');
+});
+$('btn-logout-yes').addEventListener('click', () => {
+  closeModal('modal-logout');
+  me = null;
+  saveMe();
+  if (socket) socket.disconnect();
+  socket = null;
+  showScreen('screen-auth');
+  $('reg-name').value = '';
+  $('reg-pass').value = '';
+  $('login-code').value = '';
+  $('login-pass').value = '';
+});
+
+/* ============ VIEWPORT ============ */
 function setupViewport() {
   const root = document.documentElement;
   const updateVh = () => { root.style.setProperty('--vh', `${window.innerHeight * 0.01}px`); };
@@ -569,6 +672,7 @@ function setupViewport() {
 }
 setupViewport();
 
+/* ============ ВКЛАДКИ ============ */
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -579,7 +683,9 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
+/* ============ РЕГИСТРАЦИЯ ============ */
 $('btn-register').addEventListener('click', async () => {
+  if (!navigator.onLine) { updateOnlineStatus(); return; }
   const name = $('reg-name').value.trim();
   const pass = $('reg-pass').value;
   $('reg-error').textContent = '';
@@ -594,11 +700,16 @@ $('btn-register').addEventListener('click', async () => {
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || 'Ошибка');
     me = data; saveMe(); initApp();
-  } catch (e) { $('reg-error').textContent = e.message; }
+  } catch (e) {
+    if (!navigator.onLine) { updateOnlineStatus(); }
+    else $('reg-error').textContent = e.message;
+  }
   finally { $('btn-register').disabled = false; }
 });
 
+/* ============ ВХОД ============ */
 $('btn-login').addEventListener('click', async () => {
+  if (!navigator.onLine) { updateOnlineStatus(); return; }
   const code = $('login-code').value.trim().toUpperCase();
   const pass = $('login-pass').value;
   $('login-error').textContent = '';
@@ -612,10 +723,14 @@ $('btn-login').addEventListener('click', async () => {
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || 'Ошибка');
     me = data; saveMe(); initApp();
-  } catch (e) { $('login-error').textContent = e.message; }
+  } catch (e) {
+    if (!navigator.onLine) { updateOnlineStatus(); }
+    else $('login-error').textContent = e.message;
+  }
   finally { $('btn-login').disabled = false; }
 });
 
+/* ============ КОПИРОВАНИЕ ============ */
 $('btn-copy').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(me.user_code);
@@ -624,21 +739,16 @@ $('btn-copy').addEventListener('click', async () => {
   } catch { alert('Твой код: ' + me.user_code); }
 });
 
-$('btn-logout').addEventListener('click', () => {
-  if (!confirm('Выйти?')) return;
-  me = null; saveMe();
-  if (socket) socket.disconnect();
-  socket = null;
-  showScreen('screen-auth');
-});
-
+/* ============ НАВИГАЦИЯ ============ */
 $('btn-go-find').addEventListener('click', () => {
   $('find-code').value = ''; $('find-error').textContent = '';
   showScreen('screen-find');
 });
 $('btn-go-chats').addEventListener('click', () => { showScreen('screen-chats'); loadChats(); });
 
+/* ============ ПОИСК ============ */
 $('btn-find').addEventListener('click', async () => {
+  if (!navigator.onLine) { updateOnlineStatus(); return; }
   const code = $('find-code').value.trim().toUpperCase();
   $('find-error').textContent = '';
   if (!code) return $('find-error').textContent = 'Введи код';
@@ -653,7 +763,10 @@ $('btn-find').addEventListener('click', async () => {
     $('found-code').textContent = data.user_code;
     $('found-avatar').textContent = initials(data.display_name);
     openModal('modal-found');
-  } catch (e) { $('find-error').textContent = e.message; }
+  } catch (e) {
+    if (!navigator.onLine) { updateOnlineStatus(); }
+    else $('find-error').textContent = e.message;
+  }
   finally { $('btn-find').disabled = false; }
 });
 
@@ -671,6 +784,7 @@ $('btn-start-chat').addEventListener('click', async () => {
   } catch (e) { alert(e.message); }
 });
 
+/* ============ СПИСОК ЧАТОВ ============ */
 async function loadChats() {
   const list = $('chats-list');
   try {
@@ -694,6 +808,7 @@ async function loadChats() {
   } catch { list.innerHTML = '<div class="empty">Не удалось загрузить</div>'; }
 }
 
+/* ============ ОТКРЫТИЕ ЧАТА ============ */
 async function openChat(chat) {
   currentChat = chat;
   $('chat-name').textContent = chat.other_name;
@@ -711,6 +826,7 @@ async function openChat(chat) {
 
 function backToChats() { currentChat = null; showScreen('screen-chats'); loadChats(); }
 
+/* ============ ОТРИСОВКА ============ */
 function renderMessage(m) {
   const box = $('messages');
   const div = document.createElement('div');
@@ -727,7 +843,9 @@ function renderMessage(m) {
 }
 function scrollMessages() { const box = $('messages'); if (box) box.scrollTop = box.scrollHeight; }
 
+/* ============ ОТПРАВКА ТЕКСТА ============ */
 function sendMessage() {
+  if (!navigator.onLine) { updateOnlineStatus(); return; }
   const input = $('msg-input');
   const text = input.value.trim();
   if (!text || !currentChat || !socket) return;
@@ -742,8 +860,10 @@ $('msg-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
 });
 
+/* ============ КАРТИНКА ============ */
 $('btn-attach').addEventListener('click', () => $('file-input').click());
 $('file-input').addEventListener('change', async (e) => {
+  if (!navigator.onLine) { updateOnlineStatus(); return; }
   const file = e.target.files[0];
   e.target.value = '';
   if (!file || !currentChat) return;
@@ -757,9 +877,13 @@ $('file-input').addEventListener('change', async (e) => {
     socket.emit('send_message', {
       chat_id: currentChat.id, sender_id: me.id, type: 'image', content: data.url
     }, (msg) => renderMessage(msg));
-  } catch (err) { alert('Не удалось отправить: ' + err.message); }
+  } catch (err) {
+    if (!navigator.onLine) { updateOnlineStatus(); }
+    else alert('Не удалось отправить: ' + err.message);
+  }
 });
 
+/* ============ ГОЛОСОВЫЕ ============ */
 $('btn-mic').addEventListener('click', startRecording);
 $('btn-cancel-rec').addEventListener('click', () => stopRecording(false));
 $('btn-send-rec').addEventListener('click', () => stopRecording(true));
@@ -841,6 +965,7 @@ function stopRecording(send) {
 
 async function sendVoice(blob) {
   if (!currentChat) return;
+  if (!navigator.onLine) { updateOnlineStatus(); return; }
   const fd = new FormData();
   const ext = (blob.type.includes('mp4') ? 'm4a' : blob.type.includes('ogg') ? 'ogg' : 'webm');
   fd.append('file', blob, `voice_${Date.now()}.${ext}`);
@@ -851,17 +976,25 @@ async function sendVoice(blob) {
     socket.emit('send_message', {
       chat_id: currentChat.id, sender_id: me.id, type: 'audio', content: data.url
     }, (msg) => renderMessage(msg));
-  } catch (err) { alert('Не удалось отправить голосовое: ' + err.message); }
+  } catch (err) {
+    if (!navigator.onLine) { updateOnlineStatus(); }
+    else alert('Не удалось отправить голосовое: ' + err.message);
+  }
 }
 
+/* ============ WEBSOCKET ============ */
 function connectSocket() {
   socket = io(API_BASE || undefined);
   socket.on('connect', () => socket.emit('auth', me.id));
+  socket.on('disconnect', () => {
+    if (!navigator.onLine) updateOnlineStatus();
+  });
   socket.on('new_message', (msg) => {
     if (currentChat && msg.chat_id === currentChat.id) renderMessage(msg);
   });
 }
 
+/* ============ СТАРТ ============ */
 function initApp() {
   $('my-code-display').textContent = me.user_code;
   showScreen('screen-mycode');
@@ -871,6 +1004,8 @@ function initApp() {
 (function boot() {
   const saved = localStorage.getItem('souch_me');
   if (saved) { try { me = JSON.parse(saved); initApp(); } catch { me = null; } }
+  /* Проверим оффлайн при старте */
+  setTimeout(updateOnlineStatus, 300);
 })();
 </script>
 </body>
