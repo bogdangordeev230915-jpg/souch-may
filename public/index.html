@@ -71,6 +71,7 @@
   .content { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
   .content.center { display: flex; flex-direction: column; justify-content: center; }
   input, button { font-family: inherit; font-size: 16px; }
+
   .field {
     width: 100%; padding: 14px 16px;
     background: rgba(22, 27, 34, .55);
@@ -80,7 +81,7 @@
     border-radius: 14px;
     color: #e8eaed; margin-bottom: 12px;
     outline: none;
-    transition: border-color .2s, box-shadow .2s, background .2s;
+    transition: border-color .3s, box-shadow .3s, background .3s;
     box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 4px 16px rgba(0,0,0,.2);
   }
   .field::placeholder { color: rgba(139,148,158,.7); }
@@ -89,6 +90,28 @@
     box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 0 0 3px rgba(88,166,255,.15), 0 4px 16px rgba(0,0,0,.25);
     background: rgba(22, 27, 34, .7);
   }
+  /* Переливающееся поле, когда что-то введено */
+  .field.has-value {
+    animation: fieldGlow 2.5s ease-in-out infinite;
+    border-color: rgba(88,166,255,.55);
+  }
+  @keyframes fieldGlow {
+    0%, 100% {
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.08),
+        0 0 0 3px rgba(88,166,255,.12),
+        0 4px 20px rgba(88,166,255,.15);
+      background: rgba(22, 27, 34, .65);
+    }
+    50% {
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.12),
+        0 0 0 4px rgba(88,166,255,.25),
+        0 4px 28px rgba(88,166,255,.35);
+      background: rgba(28, 42, 60, .7);
+    }
+  }
+
   .btn {
     width: 100%; padding: 14px; border-radius: 14px;
     background: linear-gradient(135deg, rgba(35,134,54,.9), rgba(46,160,67,.85));
@@ -112,8 +135,31 @@
   .btn.secondary:hover { background: rgba(255,255,255,.1); }
   .btn.small { width: auto; padding: 10px 16px; font-size: 14px; }
   .title { font-size: 28px; font-weight: 700; margin-bottom: 8px; text-align: center; }
-  .subtitle { color: #8b949e; margin-bottom: 28px; text-align: center; font-size: 14px; }
+  .subtitle { color: #8b949e; margin-bottom: 20px; text-align: center; font-size: 14px; }
+
+  /* Приветствие над полями */
+  .welcome-msg {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: #c9d1d9;
+    line-height: 1.5;
+    min-height: 44px;
+    animation: welcomeFade .35s ease;
+    padding: 0 8px;
+  }
+  .welcome-msg .em {
+    color: #58a6ff;
+    font-weight: 600;
+  }
+  @keyframes welcomeFade {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
   .error { color: #f85149; font-size: 14px; margin-bottom: 12px; min-height: 18px; }
+
+  /* Мой код */
   .my-code-box {
     background: rgba(22, 27, 34, .5);
     backdrop-filter: blur(24px) saturate(180%);
@@ -143,6 +189,61 @@
     color: #58a6ff; margin-bottom: 20px; word-break: break-all;
     text-shadow: 0 0 20px rgba(88,166,255,.5);
   }
+
+  /* Аватар */
+  .avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, #58a6ff, #3fb950);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: #0e1116; font-size: 18px; flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(88,166,255,.4), inset 0 1px 0 rgba(255,255,255,.3);
+    border: 1px solid rgba(255,255,255,.2);
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+  }
+  .avatar.has-img {
+    background-image: var(--av);
+    color: transparent;
+    font-size: 0;
+  }
+
+  /* Профиль */
+  .profile-avatar-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    margin-bottom: 20px;
+    animation: scaleIn .35s ease;
+  }
+  .profile-avatar {
+    width: 110px; height: 110px; border-radius: 50%;
+    background: linear-gradient(135deg, #58a6ff, #3fb950);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: #0e1116; font-size: 42px;
+    box-shadow: 0 10px 40px rgba(88,166,255,.45), inset 0 2px 0 rgba(255,255,255,.3);
+    border: 2px solid rgba(255,255,255,.25);
+    overflow: hidden; position: relative;
+    background-size: cover; background-position: center;
+    transition: transform .2s;
+  }
+  .profile-avatar:active { transform: scale(.97); }
+  .profile-avatar.has-img { color: transparent; font-size: 0; }
+  .profile-avatar .edit-overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,.5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    opacity: 0;
+    transition: opacity .2s;
+    color: #fff;
+  }
+  .profile-avatar:active .edit-overlay,
+  .profile-avatar:hover .edit-overlay { opacity: 1; }
+  .profile-hint {
+    margin-top: 10px;
+    color: #8b949e;
+    font-size: 12px;
+  }
+
   .chat-item {
     display: flex; align-items: center; gap: 12px;
     padding: 14px;
@@ -167,17 +268,10 @@
   }
   .chat-item:hover { background: rgba(28, 36, 48, .7); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 8px 24px rgba(0,0,0,.3); }
   .chat-item:active { transform: scale(.98); }
-  .avatar {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: linear-gradient(135deg, #58a6ff, #3fb950);
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; color: #0e1116; font-size: 18px; flex-shrink: 0;
-    box-shadow: 0 4px 16px rgba(88,166,255,.4), inset 0 1px 0 rgba(255,255,255,.3);
-    border: 1px solid rgba(255,255,255,.2);
-  }
   .chat-item .info { flex: 1; min-width: 0; }
   .chat-item .name { font-weight: 600; margin-bottom: 2px; }
   .chat-item .code { color: #8b949e; font-size: 12px; font-family: monospace; }
+
   .messages {
     flex: 1; overflow-y: auto; padding: 16px;
     display: flex; flex-direction: column; gap: 8px;
@@ -212,6 +306,7 @@
   .msg img { max-width: 100%; border-radius: 12px; display: block; }
   .msg audio { width: 240px; max-width: 100%; margin: 4px 0; }
   .msg .time { font-size: 10px; opacity: .65; margin-top: 4px; text-align: right; }
+
   .composer {
     padding: 10px 12px;
     padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
@@ -366,86 +461,52 @@
   }
   ::-webkit-scrollbar { width: 0; height: 0; }
 
-  /* ==== НОВЫЕ ДИАЛОГИ ==== */
-
-  /* Диалог: чёрная кнопка (главное действие) */
+  /* Диалоги */
   .dlg-btn-dark {
-    padding: 14px;
-    border-radius: 14px;
+    padding: 14px; border-radius: 14px;
     border: 1px solid rgba(255,255,255,.15);
     background: linear-gradient(135deg, #05070a, #0e1116);
-    color: #fff;
-    font-weight: 600;
-    font-size: 15px;
-    cursor: pointer;
+    color: #fff; font-weight: 600; font-size: 15px; cursor: pointer;
     transition: transform .1s, box-shadow .2s, background .2s;
     box-shadow: 0 8px 24px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.1);
     letter-spacing: .5px;
   }
   .dlg-btn-dark:hover { box-shadow: 0 12px 32px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.15); }
   .dlg-btn-dark:active { transform: scale(.96); box-shadow: 0 4px 12px rgba(0,0,0,.5), inset 0 2px 4px rgba(0,0,0,.5); }
-
-  /* Диалог: бордовая кнопка (отмена) */
   .dlg-btn-burgundy {
-    padding: 14px;
-    border-radius: 14px;
+    padding: 14px; border-radius: 14px;
     border: 1px solid rgba(255,120,120,.25);
     background: linear-gradient(135deg, #6b1f2b, #4a1520);
-    color: #ffe8e8;
-    font-weight: 600;
-    font-size: 15px;
-    cursor: pointer;
+    color: #ffe8e8; font-weight: 600; font-size: 15px; cursor: pointer;
     transition: transform .1s, box-shadow .2s, background .2s;
     box-shadow: 0 8px 24px rgba(107,31,43,.4), inset 0 1px 0 rgba(255,255,255,.1);
     letter-spacing: .5px;
   }
   .dlg-btn-burgundy:hover { box-shadow: 0 12px 32px rgba(107,31,43,.6), inset 0 1px 0 rgba(255,255,255,.15); }
   .dlg-btn-burgundy:active { transform: scale(.96); box-shadow: 0 4px 12px rgba(107,31,43,.5), inset 0 2px 4px rgba(0,0,0,.4); }
-
-  /* Иконка на диалоге */
-  .dlg-icon {
-    font-size: 52px;
-    text-align: center;
-    margin-bottom: 12px;
-    filter: drop-shadow(0 0 30px rgba(88,166,255,.5));
-    animation: scaleIn .4s ease;
-  }
+  .dlg-icon { font-size: 52px; text-align: center; margin-bottom: 12px; filter: drop-shadow(0 0 30px rgba(88,166,255,.5)); animation: scaleIn .4s ease; }
   .dlg-icon.offline { filter: drop-shadow(0 0 30px rgba(88,166,255,.7)); }
   .dlg-icon.warn { filter: drop-shadow(0 0 30px rgba(248,81,73,.6)); }
-
-  .dlg-title {
-    font-size: 18px;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 20px;
-    line-height: 1.4;
-    color: #e8eaed;
-  }
-
-  .dlg-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  /* Анимация появления оффлайн-диалога */
-  @keyframes offlineShow {
-    from { transform: scale(.85) translateY(30px); opacity: 0; }
-    to   { transform: scale(1) translateY(0); opacity: 1; }
-  }
-  .modal.offline-modal {
-    animation: offlineShow .4s cubic-bezier(.2,.9,.4,1.2);
-  }
+  .dlg-title { font-size: 18px; font-weight: 600; text-align: center; margin-bottom: 20px; line-height: 1.4; color: #e8eaed; }
+  .dlg-buttons { display: flex; flex-direction: column; gap: 10px; }
+  @keyframes offlineShow { from { transform: scale(.85) translateY(30px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+  .modal.offline-modal { animation: offlineShow .4s cubic-bezier(.2,.9,.4,1.2); }
 </style>
 </head>
 <body>
 <div id="app">
 
+<!-- ЭКРАН ВХОДА -->
 <div id="screen-auth" class="screen active">
   <div class="content center">
     <div style="text-align:center; font-size:56px; margin-bottom:8px; filter: drop-shadow(0 0 30px rgba(88,166,255,.6));">💬</div>
     <div class="title">СОУЧ Май</div>
-    <div class="subtitle">Мессенджер для своих</div>
+    <div class="subtitle">Удобный приватный мессенджер, без слежки</div>
+
+    <div class="welcome-msg" id="welcome-msg">
+      <span class="em">Добро пожаловать!</span><br>Напиши своё имя и придумай пароль
+    </div>
+
     <div class="tabs">
       <div class="tab active" data-tab="register">Регистрация</div>
       <div class="tab" data-tab="login">Вход</div>
@@ -465,6 +526,7 @@
   </div>
 </div>
 
+<!-- ПРОФИЛЬ / МОЙ КОД -->
 <div id="screen-mycode" class="screen">
   <div class="header">
     <span class="logo">💬</span>
@@ -472,6 +534,13 @@
     <button class="btn small secondary" id="btn-logout">Выйти</button>
   </div>
   <div class="content">
+    <div class="profile-avatar-wrap">
+      <div class="profile-avatar" id="my-avatar">
+        <div class="edit-overlay">📷</div>
+      </div>
+      <div class="profile-hint">Нажми на аватар, чтобы сменить фото</div>
+      <input type="file" id="avatar-input" accept="image/*" style="display:none;">
+    </div>
     <div class="my-code-box">
       <div class="label">Твой личный код</div>
       <div class="code" id="my-code-display">SOUCH-XXXX-XXXX</div>
@@ -485,6 +554,7 @@
   </div>
 </div>
 
+<!-- ПОИСК -->
 <div id="screen-find" class="screen">
   <div class="header">
     <button class="back" onclick="showScreen('screen-mycode')">←</button>
@@ -497,6 +567,7 @@
   </div>
 </div>
 
+<!-- ЧАТЫ -->
 <div id="screen-chats" class="screen">
   <div class="header">
     <button class="back" onclick="showScreen('screen-mycode')">←</button>
@@ -507,6 +578,7 @@
   </div>
 </div>
 
+<!-- ЧАТ -->
 <div id="screen-chat" class="screen">
   <div class="header">
     <button class="back" onclick="backToChats()">←</button>
@@ -536,7 +608,7 @@
 <div class="modal-overlay" id="modal-found">
   <div class="modal">
     <div style="text-align:center; margin-bottom:16px;">
-      <div class="avatar" style="width:64px;height:64px;font-size:26px;margin:0 auto 12px;" id="found-avatar"></div>
+      <div class="avatar" id="found-avatar" style="width:64px;height:64px;font-size:26px;margin:0 auto 12px;"></div>
       <div style="font-size:20px; font-weight:600;" id="found-name"></div>
       <div style="font-size:12px; color:#8b949e; font-family:monospace; margin-top:4px;" id="found-code"></div>
     </div>
@@ -545,7 +617,7 @@
   </div>
 </div>
 
-<!-- Модалка: НЕТ ИНТЕРНЕТА -->
+<!-- Модалка: нет интернета -->
 <div class="modal-overlay" id="modal-offline">
   <div class="modal offline-modal">
     <div class="dlg-icon offline">🌐</div>
@@ -556,7 +628,7 @@
   </div>
 </div>
 
-<!-- Модалка: ПОДТВЕРЖДЕНИЕ ВЫХОДА -->
+<!-- Модалка: выход -->
 <div class="modal-overlay" id="modal-logout">
   <div class="modal">
     <div class="dlg-icon warn">⚠️</div>
@@ -586,9 +658,23 @@ let offlineShown = false;
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const initials = name => name.trim().slice(0, 2).toUpperCase();
+const initials = name => (name || '?').trim().slice(0, 2).toUpperCase();
 const fmtTime = ts => new Date(ts).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 const fmtDur = sec => `${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`;
+
+/* Помощник: рендер аватара с картинкой или инициалами */
+function setAvatar(el, user) {
+  if (!el) return;
+  if (user && user.avatar) {
+    el.classList.add('has-img');
+    el.style.setProperty('--av', `url(${user.avatar})`);
+    el.textContent = '';
+  } else {
+    el.classList.remove('has-img');
+    el.style.removeProperty('--av');
+    el.textContent = initials(user ? user.display_name : '?');
+  }
+}
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -601,13 +687,38 @@ function openModal(id) { $(id).classList.add('active'); }
 function closeModal(id) { $(id).classList.remove('active'); }
 function saveMe() { if (me) localStorage.setItem('souch_me', JSON.stringify(me)); else localStorage.removeItem('souch_me'); }
 
-/* ============ ОФФЛАЙН-МОНИТОРИНГ ============ */
+/* ===== ПРИВЕТСТВИЕ ПО ВКЛАДКЕ ===== */
+function updateWelcome(tab) {
+  const el = $('welcome-msg');
+  if (tab === 'login') {
+    el.innerHTML = '<span class="em">Введи свои данные,</span><br>чтобы войти';
+  } else {
+    el.innerHTML = '<span class="em">Добро пожаловать!</span><br>Напиши своё имя и придумай пароль';
+  }
+  el.style.animation = 'none';
+  void el.offsetWidth;
+  el.style.animation = '';
+}
+
+/* ===== ПЕРЕЛИВАЮЩИЕСЯ ПОЛЯ ===== */
+function bindFieldGlow(input) {
+  const upd = () => {
+    if (input.value && input.value.trim().length > 0) input.classList.add('has-value');
+    else input.classList.remove('has-value');
+  };
+  input.addEventListener('input', upd);
+  input.addEventListener('change', upd);
+  upd();
+}
+['reg-name','reg-pass','login-code','login-pass','find-code','msg-input'].forEach(id => {
+  const el = $(id);
+  if (el) bindFieldGlow(el);
+});
+
+/* ===== ОФФЛАЙН ===== */
 function updateOnlineStatus() {
   if (!navigator.onLine) {
-    if (!offlineShown) {
-      openModal('modal-offline');
-      offlineShown = true;
-    }
+    if (!offlineShown) { openModal('modal-offline'); offlineShown = true; }
   } else {
     offlineShown = false;
     closeModal('modal-offline');
@@ -615,39 +726,29 @@ function updateOnlineStatus() {
 }
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
+$('btn-offline-ok').addEventListener('click', () => closeModal('modal-offline'));
 
-$('btn-offline-ok').addEventListener('click', () => {
-  closeModal('modal-offline');
-});
-
-/* ============ ПОДТВЕРЖДЕНИЕ ВЫХОДА ============ */
-$('btn-logout').addEventListener('click', () => {
-  openModal('modal-logout');
-});
-$('btn-logout-no').addEventListener('click', () => {
-  closeModal('modal-logout');
-});
+/* ===== ВЫХОД ===== */
+$('btn-logout').addEventListener('click', () => openModal('modal-logout'));
+$('btn-logout-no').addEventListener('click', () => closeModal('modal-logout'));
 $('btn-logout-yes').addEventListener('click', () => {
   closeModal('modal-logout');
-  me = null;
-  saveMe();
+  me = null; saveMe();
   if (socket) socket.disconnect();
   socket = null;
   showScreen('screen-auth');
-  $('reg-name').value = '';
-  $('reg-pass').value = '';
-  $('login-code').value = '';
-  $('login-pass').value = '';
+  ['reg-name','reg-pass','login-code','login-pass'].forEach(id => {
+    const el = $(id); if (el) { el.value = ''; el.classList.remove('has-value'); }
+  });
 });
 
-/* ============ VIEWPORT ============ */
+/* ===== VIEWPORT ===== */
 function setupViewport() {
   const root = document.documentElement;
   const updateVh = () => { root.style.setProperty('--vh', `${window.innerHeight * 0.01}px`); };
   updateVh();
   window.addEventListener('resize', updateVh);
   window.addEventListener('orientationchange', () => setTimeout(updateVh, 300));
-
   const syncHeight = () => {
     const app = document.getElementById('app');
     if (!app) return;
@@ -656,7 +757,6 @@ function setupViewport() {
       : window.innerHeight + 'px';
   };
   syncHeight();
-
   if (window.visualViewport) {
     const vv = window.visualViewport;
     const onVV = () => {
@@ -672,7 +772,7 @@ function setupViewport() {
 }
 setupViewport();
 
-/* ============ ВКЛАДКИ ============ */
+/* ===== ВКЛАДКИ ===== */
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -680,10 +780,11 @@ document.querySelectorAll('.tab').forEach(tab => {
     const isReg = tab.dataset.tab === 'register';
     $('form-register').style.display = isReg ? 'block' : 'none';
     $('form-login').style.display = isReg ? 'none' : 'block';
+    updateWelcome(tab.dataset.tab);
   });
 });
 
-/* ============ РЕГИСТРАЦИЯ ============ */
+/* ===== РЕГИСТРАЦИЯ ===== */
 $('btn-register').addEventListener('click', async () => {
   if (!navigator.onLine) { updateOnlineStatus(); return; }
   const name = $('reg-name').value.trim();
@@ -701,13 +802,13 @@ $('btn-register').addEventListener('click', async () => {
     if (!r.ok) throw new Error(data.error || 'Ошибка');
     me = data; saveMe(); initApp();
   } catch (e) {
-    if (!navigator.onLine) { updateOnlineStatus(); }
+    if (!navigator.onLine) updateOnlineStatus();
     else $('reg-error').textContent = e.message;
   }
   finally { $('btn-register').disabled = false; }
 });
 
-/* ============ ВХОД ============ */
+/* ===== ВХОД ===== */
 $('btn-login').addEventListener('click', async () => {
   if (!navigator.onLine) { updateOnlineStatus(); return; }
   const code = $('login-code').value.trim().toUpperCase();
@@ -721,16 +822,65 @@ $('btn-login').addEventListener('click', async () => {
       body: JSON.stringify({ user_code: code, password: pass })
     });
     const data = await r.json();
-    if (!r.ok) throw new Error(data.error || 'Ошибка');
+    if (!r.ok) throw new Error(data.error || 'Ничего не нашли в данных');
     me = data; saveMe(); initApp();
   } catch (e) {
-    if (!navigator.onLine) { updateOnlineStatus(); }
+    if (!navigator.onLine) updateOnlineStatus();
     else $('login-error').textContent = e.message;
   }
   finally { $('btn-login').disabled = false; }
 });
 
-/* ============ КОПИРОВАНИЕ ============ */
+/* ===== АВАТАР ===== */
+$('my-avatar').addEventListener('click', () => $('avatar-input').click());
+$('avatar-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  if (!file.type.startsWith('image/')) return alert('Нужна картинка');
+  if (file.size > 3 * 1024 * 1024) return alert('Картинка больше 3 МБ');
+
+  const dataUrl = await new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.onload = () => res(reader.result);
+    reader.onerror = rej;
+    reader.readAsDataURL(file);
+  });
+
+  /* Уменьшим картинку до 512x512 через canvas */
+  const img = new Image();
+  img.src = dataUrl;
+  await new Promise(r => img.onload = r);
+  const canvas = document.createElement('canvas');
+  const size = 512;
+  canvas.width = size; canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const minSide = Math.min(img.width, img.height);
+  const sx = (img.width - minSide) / 2;
+  const sy = (img.height - minSide) / 2;
+  ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+  const smallDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+  me.avatar = smallDataUrl;
+  saveMe();
+  setAvatar($('my-avatar'), me);
+
+  try {
+    const r = await fetch(API_BASE + '/api/avatar', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: me.id, avatar: smallDataUrl })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Ошибка');
+    me.avatar = data.avatar;
+    saveMe();
+    setAvatar($('my-avatar'), me);
+  } catch (err) {
+    alert('Не удалось сохранить аватар: ' + err.message);
+  }
+});
+
+/* ===== КОПИРОВАНИЕ ===== */
 $('btn-copy').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(me.user_code);
@@ -739,14 +889,15 @@ $('btn-copy').addEventListener('click', async () => {
   } catch { alert('Твой код: ' + me.user_code); }
 });
 
-/* ============ НАВИГАЦИЯ ============ */
+/* ===== НАВИГАЦИЯ ===== */
 $('btn-go-find').addEventListener('click', () => {
-  $('find-code').value = ''; $('find-error').textContent = '';
+  $('find-code').value = ''; $('find-code').classList.remove('has-value');
+  $('find-error').textContent = '';
   showScreen('screen-find');
 });
 $('btn-go-chats').addEventListener('click', () => { showScreen('screen-chats'); loadChats(); });
 
-/* ============ ПОИСК ============ */
+/* ===== ПОИСК ===== */
 $('btn-find').addEventListener('click', async () => {
   if (!navigator.onLine) { updateOnlineStatus(); return; }
   const code = $('find-code').value.trim().toUpperCase();
@@ -756,15 +907,15 @@ $('btn-find').addEventListener('click', async () => {
   try {
     const r = await fetch(API_BASE + '/api/find?code=' + encodeURIComponent(code));
     const data = await r.json();
-    if (!r.ok) throw new Error(data.error || 'Не найдено');
+    if (!r.ok) throw new Error(data.error || 'Ничего не нашли в данных');
     if (data.id === me.id) throw new Error('Это твой собственный код');
     foundUser = data;
     $('found-name').textContent = data.display_name;
     $('found-code').textContent = data.user_code;
-    $('found-avatar').textContent = initials(data.display_name);
+    setAvatar($('found-avatar'), data);
     openModal('modal-found');
   } catch (e) {
-    if (!navigator.onLine) { updateOnlineStatus(); }
+    if (!navigator.onLine) updateOnlineStatus();
     else $('find-error').textContent = e.message;
   }
   finally { $('btn-find').disabled = false; }
@@ -780,11 +931,17 @@ $('btn-start-chat').addEventListener('click', async () => {
     });
     const chat = await r.json();
     if (!r.ok) throw new Error(chat.error || 'Ошибка');
-    openChat({ id: chat.id, other_id: foundUser.id, other_name: foundUser.display_name, other_code: foundUser.user_code });
+    openChat({
+      id: chat.id,
+      other_id: foundUser.id,
+      other_name: foundUser.display_name,
+      other_code: foundUser.user_code,
+      other_avatar: foundUser.avatar || null
+    });
   } catch (e) { alert(e.message); }
 });
 
-/* ============ СПИСОК ЧАТОВ ============ */
+/* ===== СПИСОК ЧАТОВ ===== */
 async function loadChats() {
   const list = $('chats-list');
   try {
@@ -792,28 +949,32 @@ async function loadChats() {
     const chats = await r.json();
     if (!chats.length) { list.innerHTML = '<div class="empty">Пока нет чатов.<br>Найди друга по коду!</div>'; return; }
     list.innerHTML = chats.map(c => `
-      <div class="chat-item" data-id="${esc(c.id)}" data-oid="${esc(c.other_id)}" data-oname="${esc(c.other_name)}" data-ocode="${esc(c.other_code)}">
-        <div class="avatar">${esc(initials(c.other_name))}</div>
+      <div class="chat-item" data-id="${esc(c.id)}" data-oid="${esc(c.other_id)}" data-oname="${esc(c.other_name)}" data-ocode="${esc(c.other_code)}" data-oav="${c.other_avatar ? '1' : '0'}">
+        <div class="avatar" data-init="${esc(initials(c.other_name))}" style="${c.other_avatar ? `--av: url(${c.other_avatar}); background-image: var(--av);` : ''}"></div>
         <div class="info">
           <div class="name">${esc(c.other_name)}</div>
           <div class="code">${esc(c.other_code)}</div>
         </div>
       </div>`).join('');
-    list.querySelectorAll('.chat-item').forEach(el => {
+    list.querySelectorAll('.chat-item').forEach((el, i) => {
+      const av = el.querySelector('.avatar');
+      const c = chats[i];
+      setAvatar(av, { display_name: c.other_name, avatar: c.other_avatar });
       el.addEventListener('click', () => openChat({
         id: el.dataset.id, other_id: el.dataset.oid,
-        other_name: el.dataset.oname, other_code: el.dataset.ocode
+        other_name: el.dataset.oname, other_code: el.dataset.ocode,
+        other_avatar: c.other_avatar || null
       }));
     });
   } catch { list.innerHTML = '<div class="empty">Не удалось загрузить</div>'; }
 }
 
-/* ============ ОТКРЫТИЕ ЧАТА ============ */
+/* ===== ОТКРЫТИЕ ЧАТА ===== */
 async function openChat(chat) {
   currentChat = chat;
   $('chat-name').textContent = chat.other_name;
   $('chat-code').textContent = chat.other_code;
-  $('chat-avatar').textContent = initials(chat.other_name);
+  setAvatar($('chat-avatar'), { display_name: chat.other_name, avatar: chat.other_avatar });
   $('messages').innerHTML = '';
   showScreen('screen-chat');
   try {
@@ -826,7 +987,7 @@ async function openChat(chat) {
 
 function backToChats() { currentChat = null; showScreen('screen-chats'); loadChats(); }
 
-/* ============ ОТРИСОВКА ============ */
+/* ===== СООБЩЕНИЯ ===== */
 function renderMessage(m) {
   const box = $('messages');
   const div = document.createElement('div');
@@ -843,7 +1004,7 @@ function renderMessage(m) {
 }
 function scrollMessages() { const box = $('messages'); if (box) box.scrollTop = box.scrollHeight; }
 
-/* ============ ОТПРАВКА ТЕКСТА ============ */
+/* ===== ОТПРАВКА ===== */
 function sendMessage() {
   if (!navigator.onLine) { updateOnlineStatus(); return; }
   const input = $('msg-input');
@@ -853,6 +1014,7 @@ function sendMessage() {
     chat_id: currentChat.id, sender_id: me.id, type: 'text', content: text
   }, (msg) => renderMessage(msg));
   input.value = '';
+  input.classList.remove('has-value');
   input.focus();
 }
 $('btn-send').addEventListener('click', sendMessage);
@@ -860,7 +1022,7 @@ $('msg-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
 });
 
-/* ============ КАРТИНКА ============ */
+/* ===== КАРТИНКА ===== */
 $('btn-attach').addEventListener('click', () => $('file-input').click());
 $('file-input').addEventListener('change', async (e) => {
   if (!navigator.onLine) { updateOnlineStatus(); return; }
@@ -878,42 +1040,31 @@ $('file-input').addEventListener('change', async (e) => {
       chat_id: currentChat.id, sender_id: me.id, type: 'image', content: data.url
     }, (msg) => renderMessage(msg));
   } catch (err) {
-    if (!navigator.onLine) { updateOnlineStatus(); }
+    if (!navigator.onLine) updateOnlineStatus();
     else alert('Не удалось отправить: ' + err.message);
   }
 });
 
-/* ============ ГОЛОСОВЫЕ ============ */
+/* ===== ГОЛОСОВЫЕ ===== */
 $('btn-mic').addEventListener('click', startRecording);
 $('btn-cancel-rec').addEventListener('click', () => stopRecording(false));
 $('btn-send-rec').addEventListener('click', () => stopRecording(true));
 
 async function startRecording() {
   if (!currentChat) return alert('Открой чат');
-  if (!navigator.mediaDevices || !window.MediaRecorder) {
-    return alert('Твой браузер не поддерживает запись звука');
-  }
+  if (!navigator.mediaDevices || !window.MediaRecorder) return alert('Запись не поддерживается');
   try {
     recStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  } catch (e) {
-    return alert('Нет доступа к микрофону. Разреши его в настройках.');
-  }
+  } catch (e) { return alert('Нет доступа к микрофону'); }
 
   audioChunks = [];
   let mimeType = '';
   const candidates = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
-  for (const c of candidates) {
-    if (MediaRecorder.isTypeSupported(c)) { mimeType = c; break; }
-  }
-  try {
-    mediaRecorder = new MediaRecorder(recStream, mimeType ? { mimeType } : undefined);
-  } catch (e) {
-    mediaRecorder = new MediaRecorder(recStream);
-  }
+  for (const c of candidates) if (MediaRecorder.isTypeSupported(c)) { mimeType = c; break; }
+  try { mediaRecorder = new MediaRecorder(recStream, mimeType ? { mimeType } : undefined); }
+  catch { mediaRecorder = new MediaRecorder(recStream); }
 
-  mediaRecorder.ondataavailable = (ev) => {
-    if (ev.data && ev.data.size > 0) audioChunks.push(ev.data);
-  };
+  mediaRecorder.ondataavailable = (ev) => { if (ev.data && ev.data.size > 0) audioChunks.push(ev.data); };
   mediaRecorder.onstop = async () => {
     const shouldSend = mediaRecorder._shouldSend;
     try { if (recStream) recStream.getTracks().forEach(t => t.stop()); } catch {}
@@ -932,17 +1083,9 @@ async function startRecording() {
   showRecUI(true);
   updateRecTimer();
   recTimerInterval = setInterval(updateRecTimer, 250);
-
-  setTimeout(() => {
-    if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording(true);
-  }, 3 * 60 * 1000);
+  setTimeout(() => { if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording(true); }, 3 * 60 * 1000);
 }
-
-function updateRecTimer() {
-  const sec = Math.floor((Date.now() - recStartTime) / 1000);
-  $('rec-timer').textContent = fmtDur(sec);
-}
-
+function updateRecTimer() { const sec = Math.floor((Date.now() - recStartTime) / 1000); $('rec-timer').textContent = fmtDur(sec); }
 function showRecUI(active) {
   $('recording-bar').classList.toggle('active', active);
   $('msg-input').style.display = active ? 'none' : '';
@@ -952,17 +1095,14 @@ function showRecUI(active) {
   $('btn-cancel-rec').style.display = active ? 'flex' : 'none';
   $('btn-send-rec').style.display = active ? 'flex' : 'none';
 }
-
 function stopRecording(send) {
   if (!mediaRecorder) return;
   if (mediaRecorder.state !== 'recording') return;
   mediaRecorder._shouldSend = send;
   try { mediaRecorder.stop(); } catch {}
-  clearInterval(recTimerInterval);
-  recTimerInterval = null;
+  clearInterval(recTimerInterval); recTimerInterval = null;
   showRecUI(false);
 }
-
 async function sendVoice(blob) {
   if (!currentChat) return;
   if (!navigator.onLine) { updateOnlineStatus(); return; }
@@ -976,27 +1116,23 @@ async function sendVoice(blob) {
     socket.emit('send_message', {
       chat_id: currentChat.id, sender_id: me.id, type: 'audio', content: data.url
     }, (msg) => renderMessage(msg));
-  } catch (err) {
-    if (!navigator.onLine) { updateOnlineStatus(); }
-    else alert('Не удалось отправить голосовое: ' + err.message);
-  }
+  } catch (err) { alert('Не удалось отправить голосовое: ' + err.message); }
 }
 
-/* ============ WEBSOCKET ============ */
+/* ===== SOCKET ===== */
 function connectSocket() {
   socket = io(API_BASE || undefined);
   socket.on('connect', () => socket.emit('auth', me.id));
-  socket.on('disconnect', () => {
-    if (!navigator.onLine) updateOnlineStatus();
-  });
+  socket.on('disconnect', () => { if (!navigator.onLine) updateOnlineStatus(); });
   socket.on('new_message', (msg) => {
     if (currentChat && msg.chat_id === currentChat.id) renderMessage(msg);
   });
 }
 
-/* ============ СТАРТ ============ */
+/* ===== СТАРТ ===== */
 function initApp() {
   $('my-code-display').textContent = me.user_code;
+  setAvatar($('my-avatar'), me);
   showScreen('screen-mycode');
   connectSocket();
 }
@@ -1004,7 +1140,7 @@ function initApp() {
 (function boot() {
   const saved = localStorage.getItem('souch_me');
   if (saved) { try { me = JSON.parse(saved); initApp(); } catch { me = null; } }
-  /* Проверим оффлайн при старте */
+  updateWelcome('register');
   setTimeout(updateOnlineStatus, 300);
 })();
 </script>
