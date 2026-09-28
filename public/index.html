@@ -146,10 +146,7 @@
     animation: welcomeFade .35s ease;
     padding: 0 8px;
   }
-  .welcome-msg .em {
-    color: #58a6ff;
-    font-weight: 600;
-  }
+  .welcome-msg .em { color: #58a6ff; font-weight: 600; }
   @keyframes welcomeFade {
     from { opacity: 0; transform: translateY(-6px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -166,8 +163,7 @@
     padding: 32px 20px;
     text-align: center; margin-bottom: 16px;
     box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 12px 40px rgba(0,0,0,.35);
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
     animation: scaleIn .4s ease;
   }
   .my-code-box::before {
@@ -197,11 +193,13 @@
     overflow: hidden;
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
   }
   .avatar.has-img {
     background-image: var(--av);
     color: transparent;
     font-size: 0;
+    text-shadow: none;
   }
 
   .profile-avatar-wrap {
@@ -218,6 +216,7 @@
     border: 2px solid rgba(255,255,255,.25);
     overflow: hidden; position: relative;
     background-size: cover; background-position: center;
+    background-repeat: no-repeat;
     transition: transform .2s;
     cursor: pointer;
   }
@@ -262,7 +261,7 @@
     from { transform: translateX(-20px); opacity: 0; }
     to   { transform: translateX(0); opacity: 1; }
   }
-  .chat-item:hover { background: rgba(28, 36, 48, .7); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 8px 24px rgba(0,0,0,.3); }
+  .chat-item:hover { background: rgba(28, 36, 48, .7); }
   .chat-item:active { transform: scale(.98); }
   .chat-item .info { flex: 1; min-width: 0; }
   .chat-item .name { font-weight: 600; margin-bottom: 2px; }
@@ -340,8 +339,7 @@
     color: #58a6ff;
     font-size: 20px; cursor: pointer; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
-    transition: background .15s, transform .1s, box-shadow .2s;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    transition: background .15s, transform .1s;
   }
   .composer .icon-btn:hover { background: rgba(48, 54, 61, .8); }
   .composer .icon-btn:active { transform: scale(.9); }
@@ -350,7 +348,7 @@
     background: linear-gradient(135deg, rgba(35,134,54,.95), rgba(46,160,67,.85));
     border: 1px solid rgba(255,255,255,.15);
     color: #fff; font-size: 18px; cursor: pointer; flex-shrink: 0;
-    transition: transform .1s, box-shadow .2s;
+    transition: transform .1s;
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 4px 16px rgba(35,134,54,.4), inset 0 1px 0 rgba(255,255,255,.15);
   }
@@ -363,7 +361,6 @@
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(248,81,73,.2);
     border-radius: 22px;
-    animation: msgIn .2s ease;
   }
   .recording-bar.active { display: flex; }
   .recording-bar .dot {
@@ -383,11 +380,8 @@
   .composer .cancel-rec {
     width: 44px; height: 44px; border-radius: 50%;
     background: rgba(33, 38, 45, .7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(248,81,73,.25);
-    color: #f85149;
-    font-size: 20px; cursor: pointer; flex-shrink: 0;
+    color: #f85149; font-size: 20px; cursor: pointer; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
   }
   .composer .send-rec {
@@ -396,9 +390,9 @@
     border: 1px solid rgba(255,255,255,.15);
     color: #fff; font-size: 18px; cursor: pointer; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 16px rgba(35,134,54,.4);
   }
   .empty { text-align: center; color: #8b949e; padding: 40px 20px; font-size: 14px; }
+
   .modal-overlay {
     position: fixed; inset: 0;
     background: rgba(0, 0, 0, .55);
@@ -408,8 +402,7 @@
     z-index: 100; padding: 20px;
     opacity: 0; transition: opacity .25s;
   }
-  .modal-overlay.active { display: flex; opacity: 1; animation: fadeIn .25s ease; }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal-overlay.active { display: flex; opacity: 1; }
   .modal {
     background: rgba(22, 27, 34, .75);
     backdrop-filter: blur(30px) saturate(180%);
@@ -419,8 +412,7 @@
     width: 100%; max-width: 400px;
     box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 24px 60px rgba(0,0,0,.5);
     animation: modalIn .3s cubic-bezier(.2,.9,.4,1.2);
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
   }
   .modal::before {
     content: '';
@@ -438,7 +430,6 @@
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255,255,255,.08);
     padding: 4px; border-radius: 14px; margin-bottom: 16px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
   }
   .tab {
     flex: 1; padding: 10px; text-align: center;
@@ -448,7 +439,6 @@
   .tab.active {
     background: rgba(255,255,255,.08);
     color: #e8eaed; font-weight: 600;
-    box-shadow: 0 2px 8px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.1);
   }
   .code-input {
     font-family: 'SF Mono', Consolas, monospace;
@@ -462,30 +452,26 @@
     border: 1px solid rgba(255,255,255,.15);
     background: linear-gradient(135deg, #05070a, #0e1116);
     color: #fff; font-weight: 600; font-size: 15px; cursor: pointer;
-    transition: transform .1s, box-shadow .2s, background .2s;
+    transition: transform .1s, box-shadow .2s;
     box-shadow: 0 8px 24px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.1);
     letter-spacing: .5px;
   }
-  .dlg-btn-dark:hover { box-shadow: 0 12px 32px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.15); }
   .dlg-btn-dark:active { transform: scale(.96); box-shadow: 0 4px 12px rgba(0,0,0,.5), inset 0 2px 4px rgba(0,0,0,.5); }
   .dlg-btn-burgundy {
     padding: 14px; border-radius: 14px;
     border: 1px solid rgba(255,120,120,.25);
     background: linear-gradient(135deg, #6b1f2b, #4a1520);
     color: #ffe8e8; font-weight: 600; font-size: 15px; cursor: pointer;
-    transition: transform .1s, box-shadow .2s, background .2s;
+    transition: transform .1s, box-shadow .2s;
     box-shadow: 0 8px 24px rgba(107,31,43,.4), inset 0 1px 0 rgba(255,255,255,.1);
     letter-spacing: .5px;
   }
-  .dlg-btn-burgundy:hover { box-shadow: 0 12px 32px rgba(107,31,43,.6), inset 0 1px 0 rgba(255,255,255,.15); }
   .dlg-btn-burgundy:active { transform: scale(.96); box-shadow: 0 4px 12px rgba(107,31,43,.5), inset 0 2px 4px rgba(0,0,0,.4); }
-  .dlg-icon { font-size: 52px; text-align: center; margin-bottom: 12px; filter: drop-shadow(0 0 30px rgba(88,166,255,.5)); animation: scaleIn .4s ease; }
+  .dlg-icon { font-size: 52px; text-align: center; margin-bottom: 12px; }
   .dlg-icon.offline { filter: drop-shadow(0 0 30px rgba(88,166,255,.7)); }
   .dlg-icon.warn { filter: drop-shadow(0 0 30px rgba(248,81,73,.6)); }
-  .dlg-title { font-size: 18px; font-weight: 600; text-align: center; margin-bottom: 20px; line-height: 1.4; color: #e8eaed; }
+  .dlg-title { font-size: 18px; font-weight: 600; text-align: center; margin-bottom: 20px; line-height: 1.4; }
   .dlg-buttons { display: flex; flex-direction: column; gap: 10px; }
-  @keyframes offlineShow { from { transform: scale(.85) translateY(30px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-  .modal.offline-modal { animation: offlineShow .4s cubic-bezier(.2,.9,.4,1.2); }
 </style>
 </head>
 <body>
@@ -607,7 +593,7 @@
 </div>
 
 <div class="modal-overlay" id="modal-offline">
-  <div class="modal offline-modal">
+  <div class="modal">
     <div class="dlg-icon offline">🌐</div>
     <div class="dlg-title">Извините, у вас пропало интернет соединение</div>
     <div class="dlg-buttons">
@@ -649,15 +635,17 @@ const initials = name => (name || '?').trim().slice(0, 2).toUpperCase();
 const fmtTime = ts => new Date(ts).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 const fmtDur = sec => `${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`;
 
+/* === АВАТАР === */
 function setAvatar(el, user) {
   if (!el) return;
+  /* Сброс */
+  el.classList.remove('has-img');
+  el.style.removeProperty('--av');
+  el.textContent = '';
   if (user && user.avatar) {
+    el.style.setProperty('--av', `url("${user.avatar}")`);
     el.classList.add('has-img');
-    el.style.setProperty('--av', `url(${user.avatar})`);
-    el.textContent = '';
   } else {
-    el.classList.remove('has-img');
-    el.style.removeProperty('--av');
     el.textContent = initials(user ? user.display_name : '?');
   }
 }
@@ -809,6 +797,7 @@ $('btn-login').addEventListener('click', async () => {
   finally { $('btn-login').disabled = false; }
 });
 
+/* === ЗАГРУЗКА АВАТАРА === */
 $('my-avatar').addEventListener('click', () => $('avatar-input').click());
 $('avatar-input').addEventListener('change', async (e) => {
   const file = e.target.files[0];
@@ -1095,11 +1084,26 @@ function connectSocket() {
   });
 }
 
-function initApp() {
+/* === СТАРТ: загружаем свежие данные с сервера === */
+async function initApp() {
   $('my-code-display').textContent = me.user_code;
-  setAvatar($('my-avatar'), me);
   showScreen('screen-mycode');
   connectSocket();
+
+  /* Первый рендер из localStorage */
+  setAvatar($('my-avatar'), me);
+
+  /* Запрашиваем свежие данные с сервера (аватар мог обновиться с другого устройства) */
+  try {
+    const r = await fetch(API_BASE + '/api/find?code=' + encodeURIComponent(me.user_code));
+    if (r.ok) {
+      const fresh = await r.json();
+      me.avatar = fresh.avatar || null;
+      me.display_name = fresh.display_name || me.display_name;
+      saveMe();
+      setAvatar($('my-avatar'), me);
+    }
+  } catch {}
 }
 
 (function boot() {
