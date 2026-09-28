@@ -13,10 +13,10 @@ const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
 
 app.use(cors());
-app.use(express.json({ limit: '5mb' }));
+app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Хранилище
+// Хранилище в памяти
 const users = new Map();
 const usersByCode = new Map();
 const chats = new Map();
@@ -34,7 +34,6 @@ function generateUniqueCode() {
   throw new Error('Не удалось сгенерировать код');
 }
 
-// Публичный вид пользователя (без пароля, но с аватаром)
 function publicUser(u) {
   if (!u) return null;
   return {
@@ -97,12 +96,11 @@ app.get('/api/find', (req, res) => {
   res.json(publicUser(user));
 });
 
-// ====== НОВОЕ: смена аватара ======
 app.post('/api/avatar', (req, res) => {
   const { user_id, avatar } = req.body;
   const user = users.get(user_id);
   if (!user) return res.status(404).json({ error: 'Пользователь не найден' });
-  if (typeof avatar !== 'string' || avatar.length > 5 * 1024 * 1024)
+  if (typeof avatar !== 'string' || avatar.length > 15 * 1024 * 1024)
     return res.status(400).json({ error: 'Слишком большое изображение' });
   if (avatar && !avatar.startsWith('data:image/'))
     return res.status(400).json({ error: 'Неверный формат' });
