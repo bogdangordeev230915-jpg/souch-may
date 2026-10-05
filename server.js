@@ -36,13 +36,13 @@ wss.on('connection', (ws) => {
     let msg;
     try {
       msg = JSON.parse(raw.toString());
-    } catch {
+    } catch (e) {
       return;
     }
     if (!msg || typeof msg.text !== 'string') return;
 
     const clean = {
-      text: msg.text.slice(0, 1000),       // ограничим длину
+      text: msg.text.slice(0, 1000),
       from: String(msg.from || 'Гость').slice(0, 32),
       time: Date.now(),
     };
